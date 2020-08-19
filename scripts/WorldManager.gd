@@ -8,7 +8,7 @@ export var towns := []
 var player_federation: Federation 
 var months := 0
 var season := 1
-var season_length := 4
+var season_length := 1
 
 var rng := RandomNumberGenerator.new()
 
@@ -19,7 +19,7 @@ func _ready() -> void:
 	player_federation = Federation.new("Baller")
 	$SeasonsTimer.start()
 	create_town("Arkanos", Vector2(400.0, 400.0), {"federation": player_federation})
-	create_town("Babylon", Vector2(100.0, 200.0), {})
+	create_town("Babylon", Vector2(100.0, 200.0), {"resources": {"food": 2}})
 
 
 func _process(_delta) -> void:
@@ -43,6 +43,8 @@ func create_town(town_name: String, position: Vector2, options: Dictionary) -> T
 	else:
 		rng.randomize()
 		town.federations = [Federation.new("Federation %s" % rng.randi())]
+	if (options.has("resources")):
+		town.town_resources = options.get("resources")
 	add_child(town)
 	town.add_to_group("towns")
 	self.connect("new_season_start", town, "_on_world_new_season_start")

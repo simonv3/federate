@@ -1,8 +1,10 @@
 extends CanvasLayer
+class_name HUD
 
 var paused := false
 onready var actionable: CenterContainer = get_node("ActionableMessage")
-
+onready var town_details: PanelContainer = get_node("UI/Bottom/Details")
+var town_details_town: Town
 
 func _process(_delta: float):
 	if Input.is_action_just_pressed("ui_select") and paused:
@@ -24,9 +26,42 @@ func receive_message(message: String, possible_actions: Array):
 	_pause_game(true)
 
 
+func set_town_details(town: Town):
+	town_details_town = town
+	town_details.show()
+	var label = (town_details.get_node("HBoxContainer/Federation") as Label)
+	var councils = (town_details.get_node("HBoxContainer/Councils") as HBoxContainer)
+	for child in councils.get_children():
+		child.queue_free()
+		
+	label.text = "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
+	
+	for council in town.councils:
+		var council_name = Label.new()
+		council_name.text = council.council_name
+		councils.add_child(council_name)
+
+	update_town_details_statistics()
+	
+
+
+func update_town_details_statistics():
+	if (town_details_town):
+		var stats = (town_details.get_node("HBoxContainer/Statistics") as HBoxContainer)
+		for child in stats.get_children():
+			child.queue_free()
+		var food_label = Label.new()
+		food_label.text = "Food: %s" % town_details_town.town_resources.food
+		stats.add_child(food_label)
+		
+		var population_label = Label.new()
+		population_label.text = "Population: %s" % town_details_town.population
+		stats.add_child(population_label)
+
+
 func _pause_game(new_paused: bool):
 	get_tree().paused = new_paused
-	var label = ($TopGui/HBoxContainer/Counters/PausedLabel as Label)
+	var label = ($UI/Top/TopGui/HBoxContainer/Counters/PausedLabel as Label)
 	if new_paused:
 		label.show()
 	else:
@@ -43,10 +78,11 @@ func _on_world_game_paused():
 	
 
 func _on_world_new_season_start(season: int):
-	($TopGui/HBoxContainer/Counters/SeasonsLabel as Label).text = "%s seasons" % season
+	($UI/Top/TopGui/HBoxContainer/Counters/SeasonsLabel as Label).text = "%s seasons" % season
+	update_town_details_statistics()
 	
 	# get the total food for all the towns
-	
+
 
 func _on_action_button_pressed(action):
 	var custom_func = action["function"]

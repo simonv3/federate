@@ -1,0 +1,142 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://sprites/Fonts/Kenney Future.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://sprites/UI/label_HP_bg.png" type="Texture" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=4]
+font_data = ExtResource( 1 )
+
+[node name="TopGui" type="MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 1004.0
+margin_bottom = 81.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 984.0
+margin_bottom = 84.0
+
+[node name="Bars" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 891.0
+margin_bottom = 84.0
+size_flags_horizontal = 3
+
+[node name="Bar" type="HBoxContainer" parent="HBoxContainer/Bars"]
+margin_right = 891.0
+margin_bottom = 84.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Bars/Bar"]
+margin_right = 120.0
+margin_bottom = 84.0
+
+[node name="Mood" type="MarginContainer" parent="HBoxContainer/Bars/Bar/VBoxContainer"]
+margin_right = 120.0
+margin_bottom = 40.0
+
+[node name="Background" type="NinePatchRect" parent="HBoxContainer/Bars/Bar/VBoxContainer/Mood"]
+margin_right = 120.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 120, 40 )
+texture = ExtResource( 2 )
+
+[node name="Title" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Mood/Background"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 12.0
+margin_top = -25.0
+margin_right = 69.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 1 )
+text = "Mood:"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Number" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Mood/Background"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_right = -6.00001
+custom_fonts/font = SubResource( 2 )
+text = "10"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Food" type="MarginContainer" parent="HBoxContainer/Bars/Bar/VBoxContainer"]
+margin_top = 44.0
+margin_right = 120.0
+margin_bottom = 84.0
+
+[node name="Background" type="NinePatchRect" parent="HBoxContainer/Bars/Bar/VBoxContainer/Food"]
+margin_right = 120.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 120, 40 )
+texture = ExtResource( 2 )
+
+[node name="Title" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Food/Background"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 12.0
+margin_top = -25.0
+margin_right = 69.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 1 )
+text = "Food:"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Number" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Food/Background"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_right = -6.00001
+custom_fonts/font = SubResource( 2 )
+text = "10"
+align = 2
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Counters" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 895.0
+margin_right = 984.0
+margin_bottom = 84.0
+
+[node name="SeasonsLabel" type="Label" parent="HBoxContainer/Counters"]
+margin_right = 89.0
+margin_bottom = 18.0
+custom_fonts/font = SubResource( 3 )
+text = "1 Season"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PausedLabel" type="Label" parent="HBoxContainer/Counters"]
+visible = false
+margin_top = 22.0
+margin_right = 89.0
+margin_bottom = 61.0
+custom_fonts/font = SubResource( 4 )
+text = "Paused
+"
+align = 2

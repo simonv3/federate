@@ -25,11 +25,14 @@ var go_to_town_message = {
 	"parameters": true
 }
 
+var HUD
+
 func _init():
 	print("created town")
 
 
 func _ready():
+	HUD = get_tree().get_root().get_node("world/HUD")
 	# TODO: We possibly don't want this automatically for every town?
 	create_council("farmers", "food")
 
@@ -43,7 +46,11 @@ func _is_player_town() -> bool:
 func set_selected(new_selected) -> void:
 	selected = new_selected
 	if (new_selected):
+		var all_towns = get_tree().get_nodes_in_group("towns")
+		for town in all_towns:
+			town.selected = false
 		_is_player_town()
+		HUD.set_town_details(self)
 		($TownSelected as Sprite).show()
 	else:
 		($TownSelected as Sprite).hide()
@@ -74,7 +81,6 @@ func _grow_town() -> void:
 		set_population(population + 1)
 		town_resources.food -= food_cost_of_person
 		if _calculate_idle_people():
-			var HUD := get_tree().get_root().get_node("world/HUD")
 			# FIXME: Can the message be a class here? 
 			var text := "we have an idle person in %s!" % town_name
 			HUD.receive_message(text, [go_to_town_message])
