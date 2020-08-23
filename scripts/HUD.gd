@@ -29,9 +29,8 @@ func receive_message(message: String, possible_actions: Array):
 
 
 func set_details_label(node_name, text):
-	var details_label = Label.new()
-	details_label.text = text
-	details_container.get_node(node_name).add_child(details_label)
+	var node_to_add_to = details_container.get_node(node_name)
+	add_label(node_to_add_to, text)
 	
 
 func clean_details(node_path):
@@ -81,14 +80,8 @@ func set_details_to_town(town: Town):
 		var stats = HBoxContainer.new()
 		town_vbox.add_child(stats)
 
-		var food_label = Label.new()
-		food_label.text = "Food: %s" % details_town.town_resources.food
-		stats.add_child(food_label)
-		
-		var population_label = Label.new()
-		population_label.text = "Population: %s" % details_town.population
-		stats.add_child(population_label)
-	
+		add_label(stats, "Food: %s" % details_town.town_resources.food)
+		add_label(stats, "Population: %s" % details_town.population)			
 
 func set_details_to_council(council: Council):
 	if council:
@@ -98,12 +91,19 @@ func set_details_to_council(council: Council):
 		var council_vbox = details_container.get_node("Council")
 		details_container.get_node("Town").hide()
 		council_vbox.show()
+		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00 
+		add_label(council_vbox, "%s (%s)" % [council.resource, stepify(resource_multiplier, 0.01)])
+		add_label(council_vbox, "Council Priorities")
 		
-		var resource_label = Label.new()
-		resource_label.text = "%s: %s (%s)" % [council.resource, stepify(council.resource_quantity, 0.01), stepify(council.output_multiplier, 0.01)]
-		council_vbox.add_child(resource_label)
+		for priority in council.priorities:
+			add_label(council_vbox, priority.name)
+			
 		
-		
+func add_label(box_to_add_to: Container, text: String):
+	var resource_label = Label.new()
+	resource_label.text = text
+	box_to_add_to.add_child(resource_label)
+	
 
 func _pause_game(new_paused: bool):
 	get_tree().paused = new_paused
