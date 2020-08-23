@@ -56,11 +56,11 @@ func set_selected(new_selected) -> void:
 
 
 func create_council(name: String, resource, priorities) -> void:
-	print("printinc priorities", priorities)
-	var farmer_council = Council.new(name, resource, 5, priorities)
-	farmer_council.connect("produce_resource", self, "_on_produce_resource")
-	self.connect("inform_councils", farmer_council, "_on_town_inform_councils")
-	self.councils.append(farmer_council)
+	var council = Council.new(name, resource, 5, priorities)
+	council.connect("produce_resource", self, "_on_produce_resource")
+	self.connect("inform_councils", council, "_on_town_inform_councils")
+	self.councils.append(council)
+
 
 func set_population(new_population: int) -> void:
 	population = new_population
@@ -79,12 +79,7 @@ func _grow_town() -> void:
 	if town_resources.food > population:
 		set_population(population + 1)
 		town_resources.food -= food_cost_of_person
-#		if _calculate_idle_people() and _is_player_town():
-			# FIXME: Can the message be a class here? 
-#			var text := "we have an idle person in %s!" % town_name
-#			HUD.receive_message(text, [go_to_town_message])
-
-#	print("%s resources: %s, population: %s, councils #: %s" % [town_name, town_resources, population, councils.size()])
+		# TODO: assign to council based on town preference.
 
 
 func _calculate_idle_people() -> int:

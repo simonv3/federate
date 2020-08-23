@@ -5,7 +5,17 @@ signal produce_resource
 
 export var council_name := ''
 export var member_number := 0 setget set_member_number
-export var output_multiplier := 0.25
+export var output_multiplier := "medium"
+
+var resource_multiplier_map = {
+	"food": {
+		"low": 0.10,
+		"medium": 0.25,
+		"high": 0.25
+	}
+}
+
+
 var resource: String
 var priorities := []
 
@@ -21,9 +31,14 @@ func _init(new_council_name: String, new_resource: String, new_council_amount: i
 
 func _on_town_inform_councils(season: int) -> void:
 	if season % 4 == 0:
-		resource_quantity = output_multiplier * member_number
+		resource_quantity = resource_multiplier_map[resource][output_multiplier] * member_number
 		emit_signal("produce_resource", resource, resource_quantity)
 
 
 func set_member_number(new_number: int):
 	member_number = new_number
+
+
+func set_productivity(level: String):
+	if level in ["low", "medium", "high"]:
+		output_multiplier = level

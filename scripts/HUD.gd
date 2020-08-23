@@ -58,24 +58,14 @@ func set_details_to_town(town: Town):
 	if town and are_details_open:
 		details_council = null
 		details_town = town
-
-		clean_details("Town")
-		toggle_details_container(true)
 		
-		var town_vbox = details_container.get_node("Town")
-		details_container.get_node("Council").hide()
-		town_vbox.show()
-		set_details_label("Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name])
+		var town_vbox = toggle_to_show("Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name])
 		
 		var councils = HBoxContainer.new()
 		town_vbox.add_child(councils)
 	
 		for council in town.councils:
-			print('council %s %s' % [town.town_name, council])
-			var council_name = Button.new()
-			council_name.connect("pressed", self, "_on_Council_clicked", [council])
-			council_name.text = council.council_name
-			councils.add_child(council_name)
+			add_button(councils, council.council_name, "_on_Council_clicked", [council])
 	
 		var stats = HBoxContainer.new()
 		town_vbox.add_child(stats)
@@ -83,22 +73,51 @@ func set_details_to_town(town: Town):
 		add_label(stats, "Food: %s" % details_town.town_resources.food)
 		add_label(stats, "Population: %s" % details_town.population)			
 
+
+func toggle_to_show(showing: String, title: String) -> VBoxContainer:
+	clean_details(showing)
+	for child in details_container.get_children():
+		child.hide()
+		
+	toggle_details_container(true)
+	set_details_label(showing, title)
+	var council_vbox = details_container.get_node(showing)
+	
+	details_container.get_node("Town").hide()
+	council_vbox.show()
+	return council_vbox
+
+
 func set_details_to_council(council: Council):
 	if council:
 		details_council = council
-		clean_details("Council")
-		set_details_label("Council", "Council %s" % council.council_name)
-		var council_vbox = details_container.get_node("Council")
-		details_container.get_node("Town").hide()
-		council_vbox.show()
-		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00 
-		add_label(council_vbox, "%s (%s)" % [council.resource, stepify(resource_multiplier, 0.01)])
-		add_label(council_vbox, "Council Priorities")
 		
+		var council_vbox = toggle_to_show("Council", "Council %s" % council.council_name)
+		
+		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00 
+
+		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
+		
+		var buttons = ["low", "medium", "high"]
+
+		var production_rate_buttons = HBoxContainer.new()
+		council_vbox.add_child(production_rate_buttons)
+
+		for button in buttons:
+			add_button(production_rate_buttons, button, "_on_Productivity_clicked", [council, button])
+
+		add_label(council_vbox, "Council Priorities")
 		for priority in council.priorities:
 			add_label(council_vbox, priority.name)
-			
-		
+
+
+func add_button(parent: Node, text: String, function_name: String, parameters: Array):
+	var council_name = Button.new()
+	council_name.connect("pressed", self, function_name, parameters)
+	council_name.text = text
+	parent.add_child(council_name)
+
+
 func add_label(box_to_add_to: Container, text: String):
 	var resource_label = Label.new()
 	resource_label.text = text
@@ -161,3 +180,7 @@ func _on_Council_clicked(council: Council):
 	toggle_details_container(true)
 	set_details_to_council(council)
 	
+	
+func _on_Productivity_clicked(council: Council, level: String):
+	council.set_productivity(level)
+
