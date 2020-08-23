@@ -18,7 +18,7 @@ __meta__ = {
 
 [node name="Top" type="MarginContainer" parent="UI"]
 margin_right = 1024.0
-margin_bottom = 104.0
+margin_bottom = 38.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
@@ -32,12 +32,12 @@ __meta__ = {
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 1014.0
-margin_bottom = 94.0
+margin_bottom = 28.0
 mouse_filter = 2
 
 [node name="Bottom" type="MarginContainer" parent="UI"]
-margin_top = 108.0
-margin_right = 310.0
+margin_top = 42.0
+margin_right = 10.0
 margin_bottom = 600.0
 mouse_filter = 2
 size_flags_horizontal = 0
@@ -47,33 +47,35 @@ custom_constants/margin_top = 200
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 10
 
-[node name="Details" type="PanelContainer" parent="UI/Bottom"]
-pause_mode = 2
+[node name="Panel" type="PanelContainer" parent="UI/Bottom"]
+visible = false
 margin_left = 10.0
 margin_top = 200.0
-margin_right = 310.0
-margin_bottom = 482.0
+margin_right = 24.0
+margin_bottom = 548.0
+
+[node name="Details" type="VBoxContainer" parent="UI/Bottom/Panel"]
+pause_mode = 2
+margin_right = 300.0
+margin_bottom = 348.0
 rect_min_size = Vector2( 300, 0 )
 
-[node name="HBoxContainer" type="VBoxContainer" parent="UI/Bottom/Details"]
+[node name="Close" type="Button" parent="UI/Bottom/Panel/Details"]
+margin_right = 12.0
+margin_bottom = 20.0
+text = "Close Details"
+
+[node name="Town" type="VBoxContainer" parent="UI/Bottom/Panel/Details"]
+visible = false
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 293.0
 margin_bottom = 275.0
 
-[node name="Federation" type="Label" parent="UI/Bottom/Details/HBoxContainer"]
-margin_right = 286.0
-margin_bottom = 14.0
-
-[node name="Councils" type="HBoxContainer" parent="UI/Bottom/Details/HBoxContainer"]
-margin_top = 18.0
-margin_right = 286.0
-margin_bottom = 18.0
-
-[node name="Statistics" type="HBoxContainer" parent="UI/Bottom/Details/HBoxContainer"]
-margin_top = 22.0
-margin_right = 286.0
-margin_bottom = 22.0
+[node name="Council" type="VBoxContainer" parent="UI/Bottom/Panel/Details"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
 
 [node name="ActionableMessage" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -83,3 +85,4 @@ margin_top = 10.0
 margin_right = 1014.0
 margin_bottom = 110.0
 mouse_default_cursor_shape = 2
+[connection signal="pressed" from="UI/Bottom/Panel/Details/Close" to="." method="_on_Close_panel_pressed"]

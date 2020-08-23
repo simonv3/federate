@@ -6,6 +6,6 @@ export var federation_name: String
 
 func _init(new_federation_name: String) -> void:
 	federation_name = new_federation_name
-	print("its a beautiful day in the %s neighborhood" % federation_name)
+
 
 

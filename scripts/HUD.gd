@@ -2,9 +2,11 @@ extends CanvasLayer
 class_name HUD
 
 var paused := false
+var are_details_open = true
 onready var actionable: CenterContainer = get_node("ActionableMessage")
-onready var town_details: PanelContainer = get_node("UI/Bottom/Details")
-var town_details_town: Town
+onready var details_container: VBoxContainer = get_node("UI/Bottom/Panel/Details")
+var details_town: Town
+var details_council: Council
 
 func _process(_delta: float):
 	if Input.is_action_just_pressed("ui_select") and paused:
@@ -26,38 +28,82 @@ func receive_message(message: String, possible_actions: Array):
 	_pause_game(true)
 
 
-func set_town_details(town: Town):
-	town_details_town = town
-	town_details.show()
-	var label = (town_details.get_node("HBoxContainer/Federation") as Label)
-	var councils = (town_details.get_node("HBoxContainer/Councils") as HBoxContainer)
-	for child in councils.get_children():
+func set_details_label(node_name, text):
+	var details_label = Label.new()
+	details_label.text = text
+	details_container.get_node(node_name).add_child(details_label)
+	
+
+func clean_details(node_path):
+	var children = details_container.get_node(node_path).get_children()
+	for child in children:
 		child.queue_free()
+
+
+func open_details_for_town(town: Town):
+	are_details_open = true
+	set_details_to_town(town)
+
+
+func toggle_details_container(should_open):
+	are_details_open = should_open
+	if should_open:
+		details_container.get_parent().show()
+	else:
+		clean_details("Town")
+		clean_details("Council")
+		details_container.get_parent().hide()
+
+
+func set_details_to_town(town: Town):
+	if town and are_details_open:
+		details_council = null
+		details_town = town
+
+		clean_details("Town")
+		toggle_details_container(true)
 		
-	label.text = "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
+		var town_vbox = details_container.get_node("Town")
+		details_container.get_node("Council").hide()
+		town_vbox.show()
+		set_details_label("Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name])
+		
+		var councils = HBoxContainer.new()
+		town_vbox.add_child(councils)
 	
-	for council in town.councils:
-		var council_name = Label.new()
-		council_name.text = council.council_name
-		councils.add_child(council_name)
-
-	update_town_details_statistics()
+		for council in town.councils:
+			print('council %s %s' % [town.town_name, council])
+			var council_name = Button.new()
+			council_name.connect("pressed", self, "_on_Council_clicked", [council])
+			council_name.text = council.council_name
+			councils.add_child(council_name)
 	
+		var stats = HBoxContainer.new()
+		town_vbox.add_child(stats)
 
-
-func update_town_details_statistics():
-	if (town_details_town):
-		var stats = (town_details.get_node("HBoxContainer/Statistics") as HBoxContainer)
-		for child in stats.get_children():
-			child.queue_free()
 		var food_label = Label.new()
-		food_label.text = "Food: %s" % town_details_town.town_resources.food
+		food_label.text = "Food: %s" % details_town.town_resources.food
 		stats.add_child(food_label)
 		
 		var population_label = Label.new()
-		population_label.text = "Population: %s" % town_details_town.population
+		population_label.text = "Population: %s" % details_town.population
 		stats.add_child(population_label)
+	
 
+func set_details_to_council(council: Council):
+	if council:
+		details_council = council
+		clean_details("Council")
+		set_details_label("Council", "Council %s" % council.council_name)
+		var council_vbox = details_container.get_node("Council")
+		details_container.get_node("Town").hide()
+		council_vbox.show()
+		
+		var resource_label = Label.new()
+		resource_label.text = "%s: %s (%s)" % [council.resource, stepify(council.resource_quantity, 0.01), stepify(council.output_multiplier, 0.01)]
+		council_vbox.add_child(resource_label)
+		
+		
 
 func _pause_game(new_paused: bool):
 	get_tree().paused = new_paused
@@ -79,9 +125,17 @@ func _on_world_game_paused():
 
 func _on_world_new_season_start(season: int):
 	($UI/Top/TopGui/HBoxContainer/Counters/SeasonsLabel as Label).text = "%s seasons" % season
-	update_town_details_statistics()
-	
-	# get the total food for all the towns
+	# These two function just make sure that the Details
+	# for either the council or the town are updated
+	# on season changes. 
+	# FIXME: The way of checking the visibility of
+	# the town vs the council is probably bad form here because
+	# it updates the state based on what's displayed,
+	# rather than what the state is
+	if details_container.get_node("Town").is_visible_in_tree():
+		set_details_to_town(details_town)
+	if details_container.get_node("Council").is_visible_in_tree():
+		set_details_to_council(details_council)
 
 
 func _on_action_button_pressed(action):
@@ -96,3 +150,14 @@ func _on_action_button_pressed(action):
 		button.queue_free()
 
 
+func _on_Close_panel_pressed():
+	toggle_details_container(false)
+	if details_town:
+		details_town.set_selected(false)
+	details_town = null
+	
+	
+func _on_Council_clicked(council: Council):
+	toggle_details_container(true)
+	set_details_to_council(council)
+	

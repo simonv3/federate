@@ -26,22 +26,20 @@ __meta__ = {
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_right = 984.0
-margin_bottom = 84.0
+margin_bottom = 61.0
 
 [node name="Bars" type="VBoxContainer" parent="HBoxContainer"]
 margin_right = 891.0
-margin_bottom = 84.0
+margin_bottom = 61.0
 size_flags_horizontal = 3
 
 [node name="Bar" type="HBoxContainer" parent="HBoxContainer/Bars"]
 margin_right = 891.0
-margin_bottom = 84.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Bars/Bar"]
-margin_right = 120.0
-margin_bottom = 84.0
 
 [node name="Mood" type="MarginContainer" parent="HBoxContainer/Bars/Bar/VBoxContainer"]
+visible = false
 margin_right = 120.0
 margin_bottom = 40.0
 
@@ -79,9 +77,9 @@ __meta__ = {
 }
 
 [node name="Food" type="MarginContainer" parent="HBoxContainer/Bars/Bar/VBoxContainer"]
-margin_top = 44.0
+visible = false
 margin_right = 120.0
-margin_bottom = 84.0
+margin_bottom = 40.0
 
 [node name="Background" type="NinePatchRect" parent="HBoxContainer/Bars/Bar/VBoxContainer/Food"]
 margin_right = 120.0
@@ -119,7 +117,7 @@ __meta__ = {
 [node name="Counters" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 895.0
 margin_right = 984.0
-margin_bottom = 84.0
+margin_bottom = 61.0
 
 [node name="SeasonsLabel" type="Label" parent="HBoxContainer/Counters"]
 margin_right = 89.0
