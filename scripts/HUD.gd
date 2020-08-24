@@ -92,14 +92,13 @@ func set_details_to_council(council: Council):
 	if council:
 		details_council = council
 		
-		var council_vbox = toggle_to_show("Council", "Council %s" % council.council_name)
+		var council_vbox = toggle_to_show("Council", "Council: %s (%s)" % [council.council_name, council.town.town_name])
 		
 		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00 
 
 		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
 		
 		var buttons = ["low", "medium", "high"]
-
 		var production_rate_buttons = HBoxContainer.new()
 		council_vbox.add_child(production_rate_buttons)
 
@@ -147,6 +146,7 @@ func _on_world_new_season_start(season: int):
 	# These two function just make sure that the Details
 	# for either the council or the town are updated
 	# on season changes. 
+
 	# FIXME: The way of checking the visibility of
 	# the town vs the council is probably bad form here because
 	# it updates the state based on what's displayed,
@@ -174,13 +174,13 @@ func _on_Close_panel_pressed():
 	if details_town:
 		details_town.set_selected(false)
 	details_town = null
-	
-	
+
+
 func _on_Council_clicked(council: Council):
 	toggle_details_container(true)
 	set_details_to_council(council)
-	
-	
+
+
 func _on_Productivity_clicked(council: Council, level: String):
 	council.set_productivity(level)
 

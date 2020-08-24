@@ -15,6 +15,7 @@ var resource_multiplier_map = {
 	}
 }
 
+var town
 
 var resource: String
 var priorities := []
@@ -22,11 +23,12 @@ var priorities := []
 var resource_quantity
 
 
-func _init(new_council_name: String, new_resource: String, new_council_amount: int, new_priorities: Array) -> void:
+func _init(new_council_name: String, new_resource: String, new_council_amount: int, new_priorities: Array, new_town) -> void:
 	council_name = new_council_name
 	resource = new_resource
 	member_number = new_council_amount
 	priorities = new_priorities
+	town = new_town
 
 
 func _on_town_inform_councils(season: int) -> void:

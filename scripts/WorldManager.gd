@@ -22,13 +22,20 @@ func _ready() -> void:
 	global_priorities = openJSON("priorities")
 	$SeasonsTimer.start()
 	
-	create_town("Arkanos", Vector2(400.0, 400.0), {"federation": player_federation})
 	var priorities = global_priorities.slice(0, 4)
+	
+	var player_town = {
+		"resources": {"food": 2}, 
+		"councils": [
+			{"name": "farmers", "resource": "food", "priorities": priorities},
+		],
+		"federation": player_federation
+	}
+	create_town("Arkanos", Vector2(400.0, 400.0), player_town)
 	
 	var init_town_data = {"resources": {"food": 2}, "councils": [
 		{"name": "farmers", "resource": "food", "priorities": priorities},
 	]}
-
 	create_town(
 		"Babylon",
 		Vector2(100.0, 200.0),
