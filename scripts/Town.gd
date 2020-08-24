@@ -35,7 +35,7 @@ func _ready():
 	HUD = get_tree().get_root().get_node("world/HUD")
 	# TODO: We possibly don't want this automatically for every town?
 
-func _is_player_town() -> bool:
+func is_player_town() -> bool:
 	for federation in federations:
 		if federation == get_node("/root/world").player_federation:
 			return true
@@ -48,7 +48,6 @@ func set_selected(new_selected) -> void:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
 			town.selected = false
-		_is_player_town()
 		HUD.open_details_for_town(self)
 		($TownSelected as Sprite).show()
 	else:

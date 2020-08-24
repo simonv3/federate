@@ -98,12 +98,13 @@ func set_details_to_council(council: Council):
 
 		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
 		
-		var buttons = ["low", "medium", "high"]
-		var production_rate_buttons = HBoxContainer.new()
-		council_vbox.add_child(production_rate_buttons)
-
-		for button in buttons:
-			add_button(production_rate_buttons, button, "_on_Productivity_clicked", [council, button])
+		if council.town.is_player_town():
+			var buttons = ["low", "medium", "high"]
+			var production_rate_buttons = HBoxContainer.new()
+			council_vbox.add_child(production_rate_buttons)
+	
+			for button in buttons:
+				add_button(production_rate_buttons, button, "_on_Productivity_clicked", [council, button])
 
 		add_label(council_vbox, "Council Priorities")
 		for priority in council.priorities:
