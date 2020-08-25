@@ -68,21 +68,25 @@ var opened_path: String
 var indentation_idx: int = 0
 var auto_parenting: bool = false
 
+
 func _ready() -> void:
 	name = "JSON"
-	
-	var indentation_option: OptionButton = get_node("Settings/VSplitContainer/Contents/Indentation/OptionButton")
+
+	var indentation_option: OptionButton = get_node(
+		"Settings/VSplitContainer/Contents/Indentation/OptionButton"
+	)
 	indentation_option.clear()
 	for i in range(0, INDENTATIONS.size()):
 		indentation_option.add_item(INDENTATIONS[i].name, i)
-	
+
 	var add_element_button: MenuButton = get_node("VBoxContainer/Tree Manipulation Tools/Add Entry")
 	for i in range(0, TYPES.size()):
 		add_element_button.get_popup().add_item(TYPES[i].name, i)
 	add_element_button.get_popup().connect("id_pressed", self, "_add_element")
-	
+
 	tree.columns = 3
 	select_file_dialog.connect("file_selected", self, "_open_file")
+
 
 func _request_open_file() -> void:
 	if not opened_path.empty():
@@ -91,22 +95,30 @@ func _request_open_file() -> void:
 		return
 	select_file_dialog.popup_centered_ratio()
 
+
 func _open_file(file_path: String) -> void:
 	var file := File.new()
 	var file_open_err := file.open(file_path, File.READ)
 	if file_open_err != OK:
-		show_error("Error while trying to open JSON file %s. Error code: %d" % [file_path, file_open_err])
+		show_error(
+			"Error while trying to open JSON file %s. Error code: %d" % [file_path, file_open_err]
+		)
 		return
-	
+
 	var parse_result := JSON.parse(file.get_as_text())
 	if parse_result.error != OK:
-		show_error("Loaded invalid JSON file from %s, please fix syntax errors before loading with this plugin." % file_path)
+		show_error(
+			(
+				"Loaded invalid JSON file from %s, please fix syntax errors before loading with this plugin."
+				% file_path
+			)
+		)
 		return
 	file.close()
-	
+
 	opened_path = file_path
 	file_name.text = select_file_dialog.current_file
-	
+
 	var root = parse_result.result
 	match typeof(root):
 		TYPE_DICTIONARY:
@@ -122,16 +134,19 @@ func _open_file(file_path: String) -> void:
 		_:
 			_gen_item(null, "Null", null)
 
-func _gen_object(node: Dictionary, node_key: String = "", has_key: bool = false, parent: Object = null) -> void:
+
+func _gen_object(
+	node: Dictionary, node_key: String = "", has_key: bool = false, parent: Object = null
+) -> void:
 	var object := tree.create_item(parent)
-	
+
 	object.set_cell_mode(TYPE_COL, TreeItem.CELL_MODE_STRING)
 	object.set_text(TYPE_COL, "Object")
 	if has_key:
 		object.set_cell_mode(KEY_COL, TreeItem.CELL_MODE_STRING)
 		object.set_text(KEY_COL, node_key)
 		object.set_editable(KEY_COL, true)
-	
+
 	for dict_key in node.keys():
 		var key := dict_key as String
 		var value = node[key]
@@ -149,16 +164,17 @@ func _gen_object(node: Dictionary, node_key: String = "", has_key: bool = false,
 			_:
 				_gen_item(object, "Null", null, key, true)
 
+
 func _gen_array(node: Array, node_key: String = "", has_key: bool = false, parent: Object = null) -> void:
 	var array := tree.create_item(parent)
-	
+
 	array.set_cell_mode(TYPE_COL, TreeItem.CELL_MODE_STRING)
 	array.set_text(TYPE_COL, "Array")
 	if has_key:
 		array.set_cell_mode(KEY_COL, TreeItem.CELL_MODE_STRING)
 		array.set_text(KEY_COL, node_key)
 		array.set_editable(KEY_COL, true)
-	
+
 	for value in node:
 		match typeof(value):
 			TYPE_DICTIONARY:
@@ -174,6 +190,7 @@ func _gen_array(node: Array, node_key: String = "", has_key: bool = false, paren
 			_:
 				_gen_item(array, "Null", null)
 
+
 func _gen_item(parent: TreeItem, type: String, value, key: String = "", has_key: bool = false) -> TreeItem:
 	var item := tree.create_item(parent)
 	item.set_cell_mode(TYPE_COL, TreeItem.CELL_MODE_STRING)
@@ -186,10 +203,11 @@ func _gen_item(parent: TreeItem, type: String, value, key: String = "", has_key:
 	item.set_editable(VALUE_COL, true)
 	return item
 
+
 func _request_save_file() -> void:
 	if opened_path.empty():
 		return
-	
+
 	var file := File.new()
 	if file.open(opened_path, File.WRITE) != OK:
 		show_error("Error while trying to open JSON file %s." % opened_path)
@@ -198,6 +216,7 @@ func _request_save_file() -> void:
 	var indent: String = INDENTATIONS[indentation_idx].indent
 	file.store_string(JSON.print(json, indent))
 	file.close()
+
 
 func _reconstruct_object(node: TreeItem) -> Dictionary:
 	var result := {}
@@ -220,6 +239,7 @@ func _reconstruct_object(node: TreeItem) -> Dictionary:
 		child = child.get_next()
 	return result
 
+
 func _reconstruct_array(node: TreeItem) -> Array:
 	var result := []
 	var child := node.get_children()
@@ -240,38 +260,45 @@ func _reconstruct_array(node: TreeItem) -> Array:
 		child = child.get_next()
 	return result
 
+
 func _request_close_file() -> void:
 	if not opened_path.empty():
 		close_file_confirmation.popup_centered()
+
 
 func _close_file() -> void:
 	opened_path = ""
 	file_name.text = ""
 	tree.clear()
-	
+
 
 func show_error(msg: String) -> void:
 	push_error(msg)
 	error_dialog.dialog_text = msg
 	error_dialog.popup_centered()
 
+
 func _close_settings() -> void:
 	settings.visible = false
+
 
 func _open_settings() -> void:
 	settings.popup_centered()
 
+
 func _select_indentation(id: int) -> void:
 	indentation_idx = id
 
+
 func _set_auto_parenting_option(pressed: bool) -> void:
 	auto_parenting = pressed
+
 
 func _add_element(id: int, parent: TreeItem = null) -> void:
 	var sel := tree.get_selected() if parent == null else parent
 	if sel == null:
 		return
-	
+
 	var key: String
 	var has_key := false
 	match sel.get_text(TYPE_COL):
@@ -293,7 +320,7 @@ func _add_element(id: int, parent: TreeItem = null) -> void:
 			else:
 				show_error("Cannot add to a non-container element!")
 			return
-	
+
 	var type: String = TYPES[id].name
 	var default_val = TYPES[id].default_val
 	match type:
@@ -303,13 +330,13 @@ func _add_element(id: int, parent: TreeItem = null) -> void:
 			_gen_array(default_val, key, has_key, sel)
 		_:
 			_gen_item(sel, type, default_val, key, has_key)
-		
+
 
 func _remove_selected_element() -> void:
 	var sel := tree.get_selected()
 	if sel == null:
 		return
-	
+
 	var parent := sel.get_parent()
 	if parent == null:
 		show_error("Cannot remove the root node!")

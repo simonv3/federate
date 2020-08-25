@@ -21,28 +21,29 @@ func _ready() -> void:
 	player_federation = Federation.new("Baller")
 	global_priorities = openJSON("priorities")
 	$SeasonsTimer.start()
-	
+
 	var priorities = global_priorities.slice(0, 4)
-	
+
 	var player_town = {
-		"resources": {"food": 2}, 
-		"councils": [
+		"resources": {"food": 2},
+		"councils":
+		[
 			{"name": "farmers", "resource": "food", "priorities": priorities},
 		],
 		"federation": player_federation
 	}
 	create_town("Arkanos", Vector2(400.0, 400.0), player_town)
-	
-	var init_town_data = {"resources": {"food": 2}, "councils": [
-		{"name": "farmers", "resource": "food", "priorities": priorities},
-	]}
-	create_town(
-		"Babylon",
-		Vector2(100.0, 200.0),
-		init_town_data
-	)
-	
-	
+
+	var init_town_data = {
+		"resources": {"food": 2},
+		"councils":
+		[
+			{"name": "farmers", "resource": "food", "priorities": priorities},
+		]
+	}
+	create_town("Babylon", Vector2(100.0, 200.0), init_town_data)
+
+
 func openJSON(file_location):
 	var file = File.new()
 	file.open("res://data/%s.json" % file_location, file.READ)
@@ -79,7 +80,9 @@ func create_town(town_name: String, position: Vector2, options: Dictionary) -> T
 
 	if options.has("councils"):
 		for council in options.get("councils"):
-			town.create_council(council.get("name"), council.get("resource"), council.get("priorities", []))
+			town.create_council(
+				council.get("name"), council.get("resource"), council.get("priorities", [])
+			)
 
 	add_child(town)
 	town.add_to_group("towns")

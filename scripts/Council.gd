@@ -7,13 +7,7 @@ export var council_name := ''
 export var member_number := 0 setget set_member_number
 export var output_multiplier := "medium"
 
-var resource_multiplier_map = {
-	"food": {
-		"low": 0.10,
-		"medium": 0.25,
-		"high": 0.25
-	}
-}
+var resource_multiplier_map = {"food": {"low": 0.10, "medium": 0.25, "high": 0.25}}
 
 var town
 
@@ -23,7 +17,13 @@ var priorities := []
 var resource_quantity
 
 
-func _init(new_council_name: String, new_resource: String, new_council_amount: int, new_priorities: Array, new_town) -> void:
+func _init(
+	new_council_name: String,
+	new_resource: String,
+	new_council_amount: int,
+	new_priorities: Array,
+	new_town
+) -> void:
 	council_name = new_council_name
 	resource = new_resource
 	member_number = new_council_amount

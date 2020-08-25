@@ -20,12 +20,11 @@ var Council = preload("Council.gd")
 
 var food_cost_of_person := 5
 var go_to_town_message = {
-	"message": "Go to town", 
-	"function": funcref(self, "set_selected"), 
-	"parameters": true
+	"message": "Go to town", "function": funcref(self, "set_selected"), "parameters": true
 }
 
 var HUD
+
 
 func _init():
 	pass
@@ -34,6 +33,7 @@ func _init():
 func _ready():
 	HUD = get_tree().get_root().get_node("world/HUD")
 	# TODO: We possibly don't want this automatically for every town?
+
 
 func is_player_town() -> bool:
 	for federation in federations:
@@ -44,7 +44,7 @@ func is_player_town() -> bool:
 
 func set_selected(new_selected) -> void:
 	selected = new_selected
-	if (new_selected):
+	if new_selected:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
 			town.selected = false
@@ -68,8 +68,8 @@ func set_population(new_population: int) -> void:
 func _on_world_new_season_start(season) -> void:
 	_grow_town()
 	emit_signal("inform_councils", season)
-	
-	
+
+
 func _on_produce_resource(resource, quantity) -> void:
 	town_resources[resource] += quantity
 
@@ -90,4 +90,4 @@ func _calculate_idle_people() -> int:
 
 func _on_Town_pressed_event(_viewport, event, _shade) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		set_selected(!selected)
+		set_selected(! selected)

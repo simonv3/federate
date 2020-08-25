@@ -8,6 +8,7 @@ onready var details_container: VBoxContainer = get_node("UI/Bottom/Panel/Details
 var details_town: Town
 var details_council: Council
 
+
 func _process(_delta: float):
 	if Input.is_action_just_pressed("ui_select") and paused:
 		_pause_game(false)
@@ -15,8 +16,11 @@ func _process(_delta: float):
 
 func receive_message(message: String, possible_actions: Array):
 	actionable.show()
-	var content_label := ($ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText as RichTextLabel)
-	var buttons := ($ActionableMessage/MessageContainer/VBoxContainer/Buttons as VBoxContainer)
+	var content_label := (
+		$ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText
+		as RichTextLabel
+	)
+	var buttons := $ActionableMessage/MessageContainer/VBoxContainer/Buttons as VBoxContainer
 	content_label.text = message
 	for action in possible_actions:
 		var new_label = Button.new()
@@ -24,14 +28,14 @@ func receive_message(message: String, possible_actions: Array):
 		new_label.connect("pressed", self, "_on_action_button_pressed", [action])
 		new_label.text = action["message"]
 		buttons.add_child(new_label)
-	
+
 	_pause_game(true)
 
 
 func set_details_label(node_name, text):
 	var node_to_add_to = details_container.get_node(node_name)
 	add_label(node_to_add_to, text)
-	
+
 
 func clean_details(node_path):
 	var children = details_container.get_node(node_path).get_children()
@@ -58,31 +62,33 @@ func set_details_to_town(town: Town):
 	if town and are_details_open:
 		details_council = null
 		details_town = town
-		
-		var town_vbox = toggle_to_show("Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name])
-		
+
+		var town_vbox = toggle_to_show(
+			"Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
+		)
+
 		var councils = HBoxContainer.new()
 		town_vbox.add_child(councils)
-	
+
 		for council in town.councils:
 			add_button(councils, council.council_name, "_on_Council_clicked", [council])
-	
+
 		var stats = HBoxContainer.new()
 		town_vbox.add_child(stats)
 
 		add_label(stats, "Food: %s" % details_town.town_resources.food)
-		add_label(stats, "Population: %s" % details_town.population)			
+		add_label(stats, "Population: %s" % details_town.population)
 
 
 func toggle_to_show(showing: String, title: String) -> VBoxContainer:
 	clean_details(showing)
 	for child in details_container.get_children():
 		child.hide()
-		
+
 	toggle_details_container(true)
 	set_details_label(showing, title)
 	var council_vbox = details_container.get_node(showing)
-	
+
 	details_container.get_node("Town").hide()
 	council_vbox.show()
 	return council_vbox
@@ -91,20 +97,24 @@ func toggle_to_show(showing: String, title: String) -> VBoxContainer:
 func set_details_to_council(council: Council):
 	if council:
 		details_council = council
-		
-		var council_vbox = toggle_to_show("Council", "Council: %s (%s)" % [council.council_name, council.town.town_name])
-		
-		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00 
+
+		var council_vbox = toggle_to_show(
+			"Council", "Council: %s (%s)" % [council.council_name, council.town.town_name]
+		)
+
+		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00
 
 		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
-		
+
 		if council.town.is_player_town():
 			var buttons = ["low", "medium", "high"]
 			var production_rate_buttons = HBoxContainer.new()
 			council_vbox.add_child(production_rate_buttons)
-	
+
 			for button in buttons:
-				add_button(production_rate_buttons, button, "_on_Productivity_clicked", [council, button])
+				add_button(
+					production_rate_buttons, button, "_on_Productivity_clicked", [council, button]
+				)
 
 		add_label(council_vbox, "Council Priorities")
 		for priority in council.priorities:
@@ -122,11 +132,11 @@ func add_label(box_to_add_to: Container, text: String):
 	var resource_label = Label.new()
 	resource_label.text = text
 	box_to_add_to.add_child(resource_label)
-	
+
 
 func _pause_game(new_paused: bool):
 	get_tree().paused = new_paused
-	var label = ($UI/Top/TopGui/HBoxContainer/Counters/PausedLabel as Label)
+	var label = $UI/Top/TopGui/HBoxContainer/Counters/PausedLabel as Label
 	if new_paused:
 		label.show()
 	else:
@@ -140,7 +150,7 @@ func _pause_game(new_paused: bool):
 
 func _on_world_game_paused():
 	_pause_game(true)
-	
+
 
 func _on_world_new_season_start(season: int):
 	($UI/Top/TopGui/HBoxContainer/Counters/SeasonsLabel as Label).text = "%s seasons" % season
@@ -184,4 +194,3 @@ func _on_Council_clicked(council: Council):
 
 func _on_Productivity_clicked(council: Council, level: String):
 	council.set_productivity(level)
-
