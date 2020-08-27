@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/ActionableMessage.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/HUD.gd" type="Script" id=2]
+[ext_resource path="res://scenes/HUDDetails.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/TopGui.tscn" type="PackedScene" id=5]
 
 [node name="HUD" type="CanvasLayer"]
@@ -54,28 +55,7 @@ margin_top = 200.0
 margin_right = 24.0
 margin_bottom = 548.0
 
-[node name="Details" type="VBoxContainer" parent="UI/Bottom/Panel"]
-pause_mode = 2
-margin_right = 300.0
-margin_bottom = 348.0
-rect_min_size = Vector2( 300, 0 )
-
-[node name="Close" type="Button" parent="UI/Bottom/Panel/Details"]
-margin_right = 12.0
-margin_bottom = 20.0
-text = "Close Details"
-
-[node name="Town" type="VBoxContainer" parent="UI/Bottom/Panel/Details"]
-visible = false
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 293.0
-margin_bottom = 275.0
-
-[node name="Council" type="VBoxContainer" parent="UI/Bottom/Panel/Details"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="Details" parent="UI/Bottom/Panel" instance=ExtResource( 3 )]
 
 [node name="ActionableMessage" parent="." instance=ExtResource( 1 )]
 anchor_right = 0.0
@@ -85,4 +65,3 @@ margin_top = 10.0
 margin_right = 1014.0
 margin_bottom = 110.0
 mouse_default_cursor_shape = 2
-[connection signal="pressed" from="UI/Bottom/Panel/Details/Close" to="." method="_on_Close_panel_pressed"]

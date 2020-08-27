@@ -23,7 +23,7 @@ var go_to_town_message = {
 	"message": "Go to town", "function": funcref(self, "set_selected"), "parameters": true
 }
 
-var HUD
+var HUDDetails
 
 
 func _init():
@@ -31,7 +31,7 @@ func _init():
 
 
 func _ready():
-	HUD = get_tree().get_root().get_node("world/HUD")
+	HUDDetails = get_tree().get_root().get_node("world/HUD/UI/Bottom/Panel/Details")
 	# TODO: We possibly don't want this automatically for every town?
 
 
@@ -48,7 +48,7 @@ func set_selected(new_selected) -> void:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
 			town.selected = false
-		HUD.open_details_for_town(self)
+		HUDDetails.open_details_for_town(self)
 		($TownSelected as Sprite).show()
 	else:
 		($TownSelected as Sprite).hide()

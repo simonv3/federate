@@ -2,11 +2,9 @@ extends CanvasLayer
 class_name HUD
 
 var paused := false
-var are_details_open = true
+
 onready var actionable: CenterContainer = get_node("ActionableMessage")
 onready var details_container: VBoxContainer = get_node("UI/Bottom/Panel/Details")
-var details_town: Town
-var details_council: Council
 
 
 func _process(_delta: float):
@@ -16,11 +14,8 @@ func _process(_delta: float):
 
 func receive_message(message: String, possible_actions: Array):
 	actionable.show()
-	var content_label := (
-		$ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText
-		as RichTextLabel
-	)
-	var buttons := $ActionableMessage/MessageContainer/VBoxContainer/Buttons as VBoxContainer
+	var content_label := $ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText
+	var buttons := $ActionableMessage/MessageContainer/VBoxContainer/Buttons
 	content_label.text = message
 	for action in possible_actions:
 		var new_label = Button.new()
@@ -30,108 +25,6 @@ func receive_message(message: String, possible_actions: Array):
 		buttons.add_child(new_label)
 
 	_pause_game(true)
-
-
-func set_details_label(node_name, text):
-	var node_to_add_to = details_container.get_node(node_name)
-	add_label(node_to_add_to, text)
-
-
-func clean_details(node_path):
-	var children = details_container.get_node(node_path).get_children()
-	for child in children:
-		child.queue_free()
-
-
-func open_details_for_town(town: Town):
-	are_details_open = true
-	set_details_to_town(town)
-
-
-func toggle_details_container(should_open):
-	are_details_open = should_open
-	if should_open:
-		details_container.get_parent().show()
-	else:
-		clean_details("Town")
-		clean_details("Council")
-		details_container.get_parent().hide()
-
-
-func set_details_to_town(town: Town):
-	if town and are_details_open:
-		details_council = null
-		details_town = town
-
-		var town_vbox = toggle_to_show(
-			"Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
-		)
-
-		var councils = HBoxContainer.new()
-		town_vbox.add_child(councils)
-
-		for council in town.councils:
-			add_button(councils, council.council_name, "_on_Council_clicked", [council])
-
-		var stats = HBoxContainer.new()
-		town_vbox.add_child(stats)
-
-		add_label(stats, "Food: %s" % details_town.town_resources.food)
-		add_label(stats, "Population: %s" % details_town.population)
-
-
-func toggle_to_show(showing: String, title: String) -> VBoxContainer:
-	clean_details(showing)
-	for child in details_container.get_children():
-		child.hide()
-
-	toggle_details_container(true)
-	set_details_label(showing, title)
-	var council_vbox = details_container.get_node(showing)
-
-	details_container.get_node("Town").hide()
-	council_vbox.show()
-	return council_vbox
-
-
-func set_details_to_council(council: Council):
-	if council:
-		details_council = council
-
-		var council_vbox = toggle_to_show(
-			"Council", "Council: %s (%s)" % [council.council_name, council.town.town_name]
-		)
-
-		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00
-
-		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
-
-		if council.town.is_player_town():
-			var buttons = ["low", "medium", "high"]
-			var production_rate_buttons = HBoxContainer.new()
-			council_vbox.add_child(production_rate_buttons)
-
-			for button in buttons:
-				add_button(
-					production_rate_buttons, button, "_on_Productivity_clicked", [council, button]
-				)
-
-		add_label(council_vbox, "Council Priorities")
-		for priority in council.priorities:
-			add_label(council_vbox, priority.name)
-
-
-func add_button(parent: Node, text: String, function_name: String, parameters: Array):
-	var council_name = Button.new()
-	council_name.connect("pressed", self, function_name, parameters)
-	council_name.text = text
-	parent.add_child(council_name)
-
-
-func add_label(box_to_add_to: Container, text: String):
-	var resource_label = Label.new()
-	resource_label.text = text
-	box_to_add_to.add_child(resource_label)
 
 
 func _pause_game(new_paused: bool):
@@ -154,18 +47,6 @@ func _on_world_game_paused():
 
 func _on_world_new_season_start(season: int):
 	($UI/Top/TopGui/HBoxContainer/Counters/SeasonsLabel as Label).text = "%s seasons" % season
-	# These two function just make sure that the Details
-	# for either the council or the town are updated
-	# on season changes. 
-
-	# FIXME: The way of checking the visibility of
-	# the town vs the council is probably bad form here because
-	# it updates the state based on what's displayed,
-	# rather than what the state is
-	if details_container.get_node("Town").is_visible_in_tree():
-		set_details_to_town(details_town)
-	if details_container.get_node("Council").is_visible_in_tree():
-		set_details_to_council(details_council)
 
 
 func _on_action_button_pressed(action):
@@ -178,19 +59,3 @@ func _on_action_button_pressed(action):
 	# in its entirety, rather than keeping it in the screen.
 	for button in get_tree().get_nodes_in_group("action_buttons"):
 		button.queue_free()
-
-
-func _on_Close_panel_pressed():
-	toggle_details_container(false)
-	if details_town:
-		details_town.set_selected(false)
-	details_town = null
-
-
-func _on_Council_clicked(council: Council):
-	toggle_details_container(true)
-	set_details_to_council(council)
-
-
-func _on_Productivity_clicked(council: Council, level: String):
-	council.set_productivity(level)
