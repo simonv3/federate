@@ -19,6 +19,7 @@ var Federation = preload("Federation.gd")
 var Council = preload("Council.gd")
 
 var food_cost_of_person := 5
+var growth_priority: Council
 var go_to_town_message = {
 	"message": "Go to town", "function": funcref(self, "set_selected"), "parameters": true
 }
@@ -65,6 +66,10 @@ func set_population(new_population: int) -> void:
 	population = new_population
 
 
+func set_growth_priority(council: Council):
+	growth_priority = council
+
+
 func _on_world_new_season_start(season) -> void:
 	_grow_town()
 	emit_signal("inform_councils", season)
@@ -78,6 +83,8 @@ func _grow_town() -> void:
 	if town_resources.food > population:
 		set_population(population + 1)
 		town_resources.food -= food_cost_of_person
+		if growth_priority:
+			growth_priority.member_number = clamp(growth_priority.member_number + 1, 0, population)
 		# TODO: assign to council based on town preference.
 
 

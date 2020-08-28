@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/HUDDetails.gd" type="Script" id=1]
+
+[node name="Details" type="VBoxContainer"]
+pause_mode = 2
+margin_right = 300.0
+margin_bottom = 348.0
+rect_min_size = Vector2( 300, 0 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Close" type="Button" parent="."]
+margin_right = 300.0
+margin_bottom = 20.0
+text = "Close Details"
+
+[node name="Town" type="VBoxContainer" parent="."]
+visible = false
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 293.0
+margin_bottom = 275.0
+
+[node name="Council" type="VBoxContainer" parent="."]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+[connection signal="pressed" from="Close" to="." method="_on_Close_pressed"]
