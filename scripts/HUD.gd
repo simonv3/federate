@@ -12,7 +12,7 @@ func _process(_delta: float):
 		_pause_game(false)
 
 
-func receive_message(message: String, possible_actions: Array):
+func receive_message(message: String, possible_actions: Array, pause_game = true):
 	actionable.show()
 	var content_label := $ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText
 	var buttons := $ActionableMessage/MessageContainer/VBoxContainer/Buttons
@@ -24,7 +24,7 @@ func receive_message(message: String, possible_actions: Array):
 		new_label.text = action["message"]
 		buttons.add_child(new_label)
 
-	_pause_game(true)
+	_pause_game(pause_game)
 
 
 func _pause_game(new_paused: bool):

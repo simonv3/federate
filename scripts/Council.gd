@@ -6,8 +6,9 @@ signal produce_resource
 export var council_name := ''
 export var member_number := 0 setget set_member_number
 export var output_multiplier := "medium"
+export var member_minimum := 0
 
-var resource_multiplier_map = {"food": {"low": 0.10, "medium": 0.25, "high": 0.25}}
+var resource_multiplier_map = {"food": {"low": 0.05, "medium": 0.10, "high": 0.15}}
 
 var town
 

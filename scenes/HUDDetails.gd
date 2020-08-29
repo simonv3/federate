@@ -72,12 +72,16 @@ func set_details_to_town(town: Town):
 			var councilBox = VBoxContainer.new()
 			add_label(councilBox, council.council_name)
 			add_button(councilBox, "View Details", "_on_Council_clicked", [council])
-			if council.town.growth_priority == council:
-				add_label(councilBox, "Is Growth Priority")
-			else:
-				add_button(
-					councilBox, "Set as Growth Priority", "_on_Council_growth_priority", [council]
-				)
+			if details_town.is_player_town():
+				if council.town.growth_priority == council:
+					add_label(councilBox, "Is Growth Priority")
+				else:
+					add_button(
+						councilBox,
+						"Set as Growth Priority",
+						"_on_Council_growth_priority",
+						[council]
+					)
 			councils.add_child(councilBox)
 
 		var stats = HBoxContainer.new()
@@ -85,6 +89,7 @@ func set_details_to_town(town: Town):
 
 		add_label(stats, "Food: %s" % details_town.town_resources.food)
 		add_label(stats, "Population: %s" % details_town.population)
+		add_label(stats, "Happiness: %s" % details_town.calculate_happiness())
 
 
 func set_details_to_council(council: Council):
@@ -95,6 +100,8 @@ func set_details_to_council(council: Council):
 		var council_vbox = toggle_to_show(
 			"Council", "Council: %s (%s)" % [council.council_name, council.town.town_name]
 		)
+
+		add_button(council_vbox, "View Town", "_on_Town_clicked", [council.town])
 
 		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00
 
@@ -127,6 +134,11 @@ func add_label(box_to_add_to: Container, text: String):
 	var resource_label = Label.new()
 	resource_label.text = text
 	box_to_add_to.add_child(resource_label)
+
+
+func _on_Town_clicked(town: Town):
+	toggle_details_container(true)
+	set_details_to_town(town)
 
 
 func _on_Council_clicked(council: Council):

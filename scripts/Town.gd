@@ -70,6 +70,17 @@ func set_growth_priority(council: Council):
 	growth_priority = council
 
 
+# We'll want a more sophisticated way of calculating happiness at some point!
+func calculate_happiness():
+	var happiness = 100
+	for council in self.councils:
+		happiness -= (
+			council.resource_multiplier_map[council.resource][council.output_multiplier]
+			* 100
+		)
+	return happiness
+
+
 func _on_world_new_season_start(season) -> void:
 	_grow_town()
 	emit_signal("inform_councils", season)
