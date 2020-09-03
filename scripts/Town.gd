@@ -55,8 +55,8 @@ func set_selected(new_selected) -> void:
 		($TownSelected as Sprite).hide()
 
 
-func create_council(name: String, resource, priorities) -> void:
-	var council = Council.new(name, resource, 5, priorities, self)
+func create_council(name: String, resource, population, priorities) -> void:
+	var council = Council.new(name, resource, population, priorities, self)
 	council.connect("produce_resource", self, "_on_produce_resource")
 	self.connect("inform_councils", council, "_on_town_inform_councils")
 	self.councils.append(council)

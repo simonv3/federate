@@ -108,6 +108,9 @@ func set_details_to_council(council: Council):
 		add_label(council_vbox, "%s (%s)" % [council.resource, resource_multiplier])
 		add_label(council_vbox, "Population: %s" % council.member_number)
 
+		var council_actions = HBoxContainer.new()
+		council_vbox.add_child(council_actions)
+
 		if council.town.is_player_town():
 			var buttons = ["low", "medium", "high"]
 			var production_rate_buttons = HBoxContainer.new()
@@ -117,6 +120,8 @@ func set_details_to_council(council: Council):
 				add_button(
 					production_rate_buttons, button, "_on_Productivity_clicked", [council, button]
 				)
+
+			add_button(council_actions, "Split Council", "_on_Council_Split_clicked", [council])
 
 		add_label(council_vbox, "Council Priorities")
 		for priority in council.priorities:
@@ -152,6 +157,11 @@ func _on_Council_growth_priority(council: Council):
 
 func _on_Productivity_clicked(council: Council, level: String):
 	council.set_productivity(level)
+
+
+func _on_Council_Split_clicked(council: Council):
+	# Pop up a confirmation dialog.
+	get_node('/root/world/HUD').receive_message("Split this council?", [], false)
 
 
 func _on_Close_pressed():
