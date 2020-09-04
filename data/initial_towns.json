@@ -1,0 +1,21 @@
+[
+  {
+    "resources": { "food": 2 },
+    "councils": [
+      {
+        "name": "farmers",
+        "resource": "food",
+        "population": 10
+      }
+    ]
+  },
+  {
+    "resources": { "food": 2 },
+    "councils": [
+      {
+        "name": "farmers",
+        "resource": "food"
+      }
+    ]
+  }
+]
