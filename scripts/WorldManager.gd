@@ -16,6 +16,7 @@ var rng := RandomNumberGenerator.new()
 var Town = preload("res://scenes/Town.tscn")
 var Federation = preload("res://scripts/Federation.gd")
 
+var resources = {"food": "farmers", "stone": "stone cutters"}
 
 func _ready() -> void:
 	player_federation = Federation.new("Baller")
@@ -26,7 +27,7 @@ func _ready() -> void:
 	var priorities = global_priorities.slice(0, 4)
 
 	var player_town = initial_towns.slice(0, 1)[0]
-	print("player", player_federation)
+
 	player_town["federation"] = player_federation
 	player_town["councils"][0]["priorities"] = priorities
 	create_town("Arkanos", Vector2(400.0, 400.0), player_town)

@@ -84,10 +84,14 @@ func set_details_to_town(town: Town):
 					)
 			councils.add_child(councilBox)
 
-		var stats = HBoxContainer.new()
+		var stats = VBoxContainer.new()
 		town_vbox.add_child(stats)
 
-		add_label(stats, "Food: %s" % details_town.town_resources.food)
+		# TODO: make resources only show if they exist.
+		for resource in details_town.town_resources:
+			add_label(stats, "%s: %s" % [resource, details_town.town_resources[resource]])
+#		add_label(stats, "Food: %s" % details_town.town_resources.food)
+#		add_label(stats, "Stone: %s" % details_town.town_resources.stone)
 		add_label(stats, "Population: %s" % details_town.population)
 		add_label(stats, "Happiness: %s" % details_town.calculate_happiness())
 
@@ -161,7 +165,25 @@ func _on_Productivity_clicked(council: Council, level: String):
 
 func _on_Council_Split_clicked(council: Council):
 	# Pop up a confirmation dialog.
-	get_node('/root/world/HUD').receive_message("Split this council?", [], false)
+	var actions = []
+	for type in self.get_node('/root/world').resources:
+		actions.push_back(
+			{
+				"label": type,
+				"func_ref": funcref(self, "_split_council"),
+				"parameters": [type, council]
+			}
+		)
+	get_node('/root/world/HUD').receive_message(
+		"Split this council? What should its resource be?", actions, false
+	)
+
+
+func _split_council(new_council_type: String, council: Council):
+	council.member_number -= 5
+	council.town.create_council(
+		get_node('/root/world').resources[new_council_type], new_council_type, 5, council.priorities
+	)
 
 
 func _on_Close_pressed():

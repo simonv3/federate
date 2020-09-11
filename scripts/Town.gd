@@ -33,7 +33,6 @@ func _init():
 
 func _ready():
 	HUDDetails = get_tree().get_root().get_node("world/HUD/UI/Bottom/Panel/Details")
-	# TODO: We possibly don't want this automatically for every town?
 
 
 func is_player_town() -> bool:
@@ -87,7 +86,10 @@ func _on_world_new_season_start(season) -> void:
 
 
 func _on_produce_resource(resource, quantity) -> void:
-	town_resources[resource] += quantity
+	if town_resources.get(resource):
+		town_resources[resource] += quantity
+	else:
+		town_resources[resource] = quantity
 
 
 func _grow_town() -> void:
@@ -96,7 +98,6 @@ func _grow_town() -> void:
 		town_resources.food -= food_cost_of_person
 		if growth_priority:
 			growth_priority.member_number = clamp(growth_priority.member_number + 1, 0, population)
-		# TODO: assign to council based on town preference.
 
 
 func _calculate_idle_people() -> int:

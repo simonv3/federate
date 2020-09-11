@@ -8,7 +8,10 @@ export var member_number := 0 setget set_member_number
 export var output_multiplier := "medium"
 export var member_minimum := 0
 
-var resource_multiplier_map = {"food": {"low": 0.05, "medium": 0.10, "high": 0.15}}
+var resource_multiplier_map = {
+	"food": {"low": 0.05, "medium": 0.10, "high": 0.15},
+	"stone": {"low": 0.01, "medium": 0.03, "high": 0.05}
+}
 
 var town
 

@@ -3,7 +3,6 @@ class_name HUD
 
 var paused := false
 
-onready var actionable: CenterContainer = get_node("ActionableMessage")
 onready var details_container: VBoxContainer = get_node("UI/Bottom/Panel/Details")
 
 
@@ -13,16 +12,25 @@ func _process(_delta: float):
 
 
 func receive_message(message: String, possible_actions: Array, pause_game = true):
-	actionable.show()
-	var content_label := $ActionableMessage/MessageContainer/VBoxContainer/Message/MessageText
-	var buttons := $ActionableMessage/MessageContainer/VBoxContainer/Buttons
-	content_label.text = message
+	var actionable: WindowDialog = get_node("Actionable")
+
+	var margin = actionable.get_child(1).get_child(0)
+
+	var hbox = VBoxContainer.new()
+	margin.add_child(hbox)
+
+	var label := Label.new()
+	label.text = message
+	hbox.add_child(label)
+
+	actionable.popup_centered()
+
 	for action in possible_actions:
-		var new_label = Button.new()
-		new_label.add_to_group("action_buttons")
-		new_label.connect("pressed", self, "_on_action_button_pressed", [action])
-		new_label.text = action["message"]
-		buttons.add_child(new_label)
+		var button := Button.new()
+		button.add_to_group("action_buttons")
+		button.connect("pressed", self, "_on_action_button_pressed", [action])
+		button.text = action["label"]
+		hbox.add_child(button)
 
 	_pause_game(pause_game)
 
@@ -50,12 +58,10 @@ func _on_world_new_season_start(season: int):
 
 
 func _on_action_button_pressed(action):
-	var custom_func = action["function"]
+	var custom_func = action["func_ref"]
+
 	if custom_func.is_valid():
-		custom_func.call_func(action["parameters"])
+		custom_func.call_funcv(action["parameters"])
+		var actionable: WindowDialog = get_node("Actionable")
+		actionable.visible = false
 	_pause_game(false)
-	actionable.hide()
-	# FIXME: it might be better to unload the parent node here
-	# in its entirety, rather than keeping it in the screen.
-	for button in get_tree().get_nodes_in_group("action_buttons"):
-		button.queue_free()
