@@ -45,7 +45,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Federate"
-run/main_scene="res://scenes/world.tscn"
+run/main_scene="res://scenes/World.tscn"
 
 [editor_plugins]
 

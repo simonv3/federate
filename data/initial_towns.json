@@ -17,5 +17,32 @@
         "resource": "food"
       }
     ]
+  },
+  {
+    "resources": { "food": 2 },
+    "councils": [
+      {
+        "name": "farmers",
+        "resource": "food"
+      }
+    ]
+  },
+  {
+    "resources": { "food": 2 },
+    "councils": [
+      {
+        "name": "farmers",
+        "resource": "food"
+      }
+    ]
+  },
+  {
+    "resources": { "food": 2 },
+    "councils": [
+      {
+        "name": "farmers",
+        "resource": "food"
+      }
+    ]
   }
 ]

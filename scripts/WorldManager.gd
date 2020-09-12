@@ -18,6 +18,7 @@ var Federation = preload("res://scripts/Federation.gd")
 
 var resources = {"food": "farmers", "stone": "stone cutters"}
 
+
 func _ready() -> void:
 	player_federation = Federation.new("Baller")
 	global_priorities = openJSON("priorities")
@@ -26,15 +27,17 @@ func _ready() -> void:
 
 	var priorities = global_priorities.slice(0, 4)
 
-	var player_town = initial_towns.slice(0, 1)[0]
+	var player_town = initial_towns.pop_front()
 
 	player_town["federation"] = player_federation
 	player_town["councils"][0]["priorities"] = priorities
-	create_town("Arkanos", Vector2(400.0, 400.0), player_town)
+	var created_player_town = create_town("Arkanos", player_town)
 
-	var other_town = initial_towns[1]
-	other_town["councils"][0]["priorities"] = priorities
-	create_town("Babylon", Vector2(100.0, 200.0), other_town)
+	$Camera2D.position = created_player_town.position
+
+	for town in initial_towns:
+		town["councils"][0]["priorities"] = priorities
+		create_town("Babylon", town)
 
 
 func openJSON(file_location):
@@ -58,10 +61,10 @@ func _on_SeasonsTimer_timeout() -> void:
 		emit_signal("new_season_start", season)
 
 
-func create_town(town_name: String, position: Vector2, options: Dictionary) -> Town:
+func create_town(town_name: String, options: Dictionary) -> Town:
 	var town = Town.instance()
 	town.town_name = town_name
-	town.position = position
+	town.position = _generate_town_position()
 	if options.has("federation"):
 		town.federations = [options.get("federation")]
 	else:
@@ -86,3 +89,17 @@ func create_town(town_name: String, position: Vector2, options: Dictionary) -> T
 	town.connect("input_event", town, "_on_Town_pressed_event")
 	towns.append(town)
 	return town
+
+
+func _generate_town_position():
+	rng.randomize()
+	var offset_from_side = 4
+	var random_spot = Vector2(
+		rng.randi_range(offset_from_side, $Map.map_size.x - offset_from_side),
+		rng.randi_range(offset_from_side, $Map.map_size.y - offset_from_side)
+	)
+	# If there is water in this spot, go find a new spot.
+	# TODO: Don't put this near existing towns
+	if $Map/Water.get_cellv(random_spot) != -1:
+		return _generate_town_position()
+	return Vector2(random_spot.x * $Map/Grass.cell_size.x, random_spot.y * $Map/Grass.cell_size.y)
