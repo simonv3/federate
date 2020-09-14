@@ -23,3 +23,15 @@ visible = false
 position = Vector2( 0.91667, 1.08333 )
 scale = Vector2( 1.12111, 1.12111 )
 texture = ExtResource( 5 )
+
+[node name="TownName" type="Label" parent="."]
+visible = false
+margin_left = -19.5998
+margin_top = -101.344
+margin_right = 20.4002
+margin_bottom = -87.3437
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="mouse_entered" from="." to="." method="_on_Town_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_Town_mouse_exited"]

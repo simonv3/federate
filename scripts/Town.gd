@@ -24,6 +24,7 @@ var go_to_town_message = {
 	"message": "Go to town", "function": funcref(self, "set_selected"), "parameters": true
 }
 
+var label
 var HUDDetails
 
 
@@ -33,6 +34,8 @@ func _init():
 
 func _ready():
 	HUDDetails = get_tree().get_root().get_node("world/HUD/UI/Bottom/Panel/Details")
+	label = get_node("TownName")
+	label.text = self.town_name
 
 
 func is_player_town() -> bool:
@@ -110,3 +113,11 @@ func _calculate_idle_people() -> int:
 func _on_Town_pressed_event(_viewport, event, _shade) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		set_selected(! selected)
+
+
+func _on_Town_mouse_entered():
+	label.visible = true
+
+
+func _on_Town_mouse_exited():
+	label.visible = false
