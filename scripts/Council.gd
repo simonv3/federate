@@ -17,6 +17,7 @@ var town
 
 var resource: String
 var priorities := []
+var relationships := []
 
 var resource_quantity
 
@@ -48,3 +49,15 @@ func set_member_number(new_number: int):
 func set_productivity(level: String):
 	if level in ["low", "medium", "high"]:
 		output_multiplier = level
+
+
+func calculate_opinion_of(type: String, OpiningAbout):
+	var opinion = []
+
+	if type == 'federation':
+		if self.town.is_in_federation(OpiningAbout):
+			opinion.push_back({"value": 10, "reason": "Same federation"})
+	var opinion_sum = 0
+	for item in opinion:
+		opinion_sum += item["value"]
+	return opinion_sum

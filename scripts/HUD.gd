@@ -17,9 +17,15 @@ func receive_message(message: String, possible_actions: Array, pause_game = true
 	var margin = actionable.get_child(1).get_child(0)
 
 	var hbox = VBoxContainer.new()
-	margin.add_child(hbox)
 
+	margin.add_child(hbox)
+	margin.anchor_left = 0
+	margin.anchor_right = 0
 	var label := Label.new()
+	label.anchor_left = 0
+	label.anchor_right = 1
+	label.set_h_size_flags(1)
+	label.autowrap = true
 	label.text = message
 	hbox.add_child(label)
 

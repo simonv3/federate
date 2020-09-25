@@ -39,8 +39,12 @@ func _ready():
 
 
 func is_player_town() -> bool:
+	return is_in_federation(get_node("/root/world").player_federation)
+
+
+func is_in_federation(other_federation: Federation) -> bool:
 	for federation in federations:
-		if federation == get_node("/root/world").player_federation:
+		if federation == other_federation:
 			return true
 	return false
 

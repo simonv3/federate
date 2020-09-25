@@ -105,6 +105,18 @@ func set_details_to_council(council: Council):
 			"Council", "Council: %s (%s)" % [council.council_name, council.town.town_name]
 		)
 
+		var federation = get_node('/root/world').player_federation
+		add_label(
+			council_vbox,
+			(
+				"Opinion of %s: %s"
+				% [
+					federation.federation_name,
+					council.calculate_opinion_of('federation', federation)
+				]
+			)
+		)
+
 		add_button(council_vbox, "View Town", "_on_Town_clicked", [council.town])
 
 		var resource_multiplier = council.output_multiplier if council.output_multiplier else 0.00
@@ -117,6 +129,7 @@ func set_details_to_council(council: Council):
 
 		if council.town.is_player_town():
 			var buttons = ["low", "medium", "high"]
+			add_label(council_vbox, 'Toggle Productivity:')
 			var production_rate_buttons = HBoxContainer.new()
 			council_vbox.add_child(production_rate_buttons)
 

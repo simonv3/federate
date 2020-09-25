@@ -1,7 +1,7 @@
 extends Node2D
 
 var noise: OpenSimplexNoise
-var map_size := Vector2(60, 60)  # * 64 for tile size
+var map_size := Vector2(20, 20)  # * 64 for tile size
 var water_cap = -0.02
 
 
