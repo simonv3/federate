@@ -5,7 +5,7 @@ export var speed = 10.0
 export var zoomspeed = 10.0
 export var zoommargin = 0.1
 
-export var zoomMin = 0.5
+export var zoomMin = 0.8
 export var zoomMax = 3.0
 
 export var marginX = 200.0
@@ -21,7 +21,7 @@ var endDragV = Vector2()
 var is_dragging = false
 
 var zoompos = Vector2()
-var zoomfactor = 1.0
+var zoomfactor := 1.0
 var zooming = false
 
 signal area_selected
