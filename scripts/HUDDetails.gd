@@ -66,10 +66,13 @@ func set_details_to_town(town: Town):
 		)
 
 		var councils = HBoxContainer.new()
-		town_vbox.add_child(councils)
+
+		var aggregateOpinion = 0
+		var federation = get_node('/root/world').player_federation
 
 		for council in town.councils:
 			var councilBox = VBoxContainer.new()
+			aggregateOpinion += council.calculate_opinion_of('federation', federation)
 			add_label(councilBox, council.council_name)
 			add_button(councilBox, "View Details", "_on_Council_clicked", [council])
 			if details_town.is_player_town():
@@ -84,6 +87,9 @@ func set_details_to_town(town: Town):
 					)
 			councils.add_child(councilBox)
 
+		add_label(town_vbox, "Opinion of %s: %s" % [federation.federation_name, aggregateOpinion])
+
+		town_vbox.add_child(councils)
 		var stats = VBoxContainer.new()
 		town_vbox.add_child(stats)
 

@@ -6,6 +6,7 @@ signal inform_councils
 export var town_name := ""
 export var population := 5 setget set_population
 
+var tile_position: Vector2
 var councils := []
 var town_resources = {"food": 5}
 # TODO: I have some concerns that structuring federations this way is 
@@ -23,6 +24,8 @@ var growth_priority: Council
 var go_to_town_message = {
 	"message": "Go to town", "function": funcref(self, "set_selected"), "parameters": true
 }
+
+var radius_needed = 4  # in tiles
 
 var label
 var HUDDetails
@@ -78,12 +81,12 @@ func set_growth_priority(council: Council):
 
 # We'll want a more sophisticated way of calculating happiness at some point!
 func calculate_happiness():
-	var happiness = 100
+	var happiness = 0
 	for council in self.councils:
-		happiness -= (
-			council.resource_multiplier_map[council.resource][council.output_multiplier]
-			* 100
-		)
+		if council.output_multiplier == 'low':
+			happiness += council.resource_multiplier_map[council.resource]['low'] * 100
+		if council.output_multiplier == 'high':
+			happiness -= (council.resource_multiplier_map[council.resource]['high'] * 100)
 	return happiness
 
 

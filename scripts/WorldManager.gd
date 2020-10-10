@@ -64,7 +64,8 @@ func _on_SeasonsTimer_timeout() -> void:
 func create_town(town_name: String, options: Dictionary) -> Town:
 	var town = Town.instance()
 	town.town_name = town_name
-	town.position = _generate_town_position()
+	town.tile_position = _generate_town_position()
+	town.position = _convert_tile_position_to_x_y(town.tile_position)
 	if options.has("federation"):
 		town.federations = [options.get("federation")]
 	else:
@@ -91,15 +92,47 @@ func create_town(town_name: String, options: Dictionary) -> Town:
 	return town
 
 
+func _convert_tile_position_to_x_y(position: Vector2):
+	var cell_size_x = $Map/Grass.cell_size.x
+	var cell_size_y = $Map/Grass.cell_size.y
+
+	return Vector2(position.x * cell_size_x, position.y * cell_size_y)
+
+
 func _generate_town_position():
 	rng.randomize()
-	var offset_from_side = 4
-	var random_spot = Vector2(
-		rng.randi_range(offset_from_side, $Map.map_size.x - offset_from_side),
-		rng.randi_range(offset_from_side, $Map.map_size.y - offset_from_side)
+	var offset_from_map_edge = 1
+
+	var random_tile_spot = Vector2(
+		rng.randi_range(offset_from_map_edge, $Map.map_size.x - offset_from_map_edge),
+		rng.randi_range(offset_from_map_edge, $Map.map_size.y - offset_from_map_edge)
 	)
 	# If there is water in this spot, go find a new spot.
-	# TODO: Don't put this near existing towns
-	if $Map/Water.get_cellv(random_spot) != -1:
+	if $Map/Water.get_cellv(random_tile_spot) != -1:
 		return _generate_town_position()
-	return Vector2(random_spot.x * $Map/Grass.cell_size.x, random_spot.y * $Map/Grass.cell_size.y)
+
+	if _is_there_space_around_other_towns(random_tile_spot):
+		return _generate_town_position()
+
+	return Vector2(random_tile_spot.x, random_tile_spot.y)
+
+
+func _is_there_space_around_other_towns(random_tile_spot: Vector2):
+	var is_in_personal_space = false
+	for town in towns:
+		print("looking at town")
+		if town.tile_position:
+			print('  town position set', town.tile_position)
+			var town_min_x = town.tile_position.x - town.radius_needed
+			var town_max_x = town.tile_position.x + town.radius_needed
+			var town_min_y = town.tile_position.y - town.radius_needed
+			var town_max_y = town.tile_position.y + town.radius_needed
+			print("  square %s %s - %s %s" % [town_min_x, town_max_x, town_min_y, town_max_y])
+			if (
+				random_tile_spot.x > town_min_x
+				and random_tile_spot.x < town_max_x
+				and random_tile_spot.y > town_min_y
+				and random_tile_spot.y < town_max_y
+			):
+				is_in_personal_space = true
+	return is_in_personal_space
