@@ -1,4 +1,4 @@
-extends Node2D
+extends InteractableEntity
 class_name Town
 
 signal inform_councils
@@ -16,8 +16,8 @@ var town_resources = {"food": 5}
 var federations := []
 
 var selected = false setget set_selected
-var Federation = preload("Federation.gd")
-var Council = preload("Council.gd")
+var Federation = preload("res://scenes/Federation.tscn")
+var Council = preload("res://scenes/Council.tscn")
 
 var food_cost_of_person := 5
 var growth_priority: Council
@@ -28,7 +28,6 @@ var go_to_town_message = {
 var radius_needed = 4  # in tiles
 
 var label
-var HUDDetails
 
 
 func _init():
@@ -36,7 +35,6 @@ func _init():
 
 
 func _ready():
-	HUDDetails = get_tree().get_root().get_node("world/HUD/UI/Bottom/Panel/Details")
 	label = get_node("TownName")
 	label.text = self.town_name
 
@@ -58,24 +56,30 @@ func set_selected(new_selected) -> void:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
 			town.selected = false
-		HUDDetails.open_details_for_town(self)
+		draw_self_in_HUD_details()
 		($TownSelected as Sprite).show()
 	else:
 		($TownSelected as Sprite).hide()
 
 
 func create_council(name: String, resource, population, priorities) -> void:
-	var council = Council.new(name, resource, population, priorities, self)
+	var council = Council.instance()
+	council.council_name = name
+	council.resource = resource
+	council.member_number = population
+	council.priorities = priorities
+	council.town = self
 	council.connect("produce_resource", self, "_on_produce_resource")
 	self.connect("inform_councils", council, "_on_town_inform_councils")
 	self.councils.append(council)
+	self.add_child(council)
 
 
 func set_population(new_population: int) -> void:
 	population = new_population
 
 
-func set_growth_priority(council: Council):
+func set_growth_priority(council):
 	growth_priority = council
 
 
@@ -90,9 +94,10 @@ func calculate_happiness():
 	return happiness
 
 
-func _on_world_new_season_start(season) -> void:
+func _on_world_new_season_start(season):
 	_grow_town()
 	emit_signal("inform_councils", season)
+	._on_world_new_season_start(season)
 
 
 func _on_produce_resource(resource, quantity) -> void:
@@ -128,3 +133,48 @@ func _on_Town_mouse_entered():
 
 func _on_Town_mouse_exited():
 	label.visible = false
+
+
+func draw_self_in_HUD_details():
+	var town = self
+
+	var town_vbox = toggle_to_show(
+		"Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
+	)
+
+	var councils = HBoxContainer.new()
+
+	var aggregateOpinion = 0
+	var federation = get_node('/root/world').player_federation
+
+	for council in town.councils:
+		var councilBox = VBoxContainer.new()
+		aggregateOpinion += council.calculate_opinion_of('federation', federation)
+		add_label(councilBox, council.council_name)
+		add_button(councilBox, "View Details", "_on_Council_clicked", [council])
+		if town.is_player_town():
+			if council.town.growth_priority == council:
+				add_label(councilBox, "Is Growth Priority")
+			else:
+				add_button(
+					councilBox, "Set as Growth Priority", "_on_Council_growth_priority", [council]
+				)
+		councils.add_child(councilBox)
+
+	add_label(town_vbox, "Opinion of %s: %s" % [federation.federation_name, aggregateOpinion])
+
+	town_vbox.add_child(councils)
+	var stats = VBoxContainer.new()
+	town_vbox.add_child(stats)
+
+	# TODO: make resources only show if they exist.
+	for resource in town.town_resources:
+		add_label(stats, "Surplus %s: %s" % [resource, town.town_resources[resource]])
+#		add_label(stats, "Food: %s" % details_town.town_resources.food)
+#		add_label(stats, "Stone: %s" % details_town.town_resources.stone)
+	add_label(stats, "Population: %s" % town.population)
+	add_label(stats, "Happiness: %s" % town.calculate_happiness())
+
+
+func _on_Council_growth_priority(council: Council):
+	council.town.set_growth_priority(council)

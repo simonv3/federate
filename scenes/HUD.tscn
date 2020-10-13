@@ -55,6 +55,10 @@ margin_right = 24.0
 margin_bottom = 548.0
 
 [node name="Details" parent="UI/Bottom/Panel" instance=ExtResource( 3 )]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 307.0
+margin_bottom = 341.0
 
 [node name="Actionable" type="WindowDialog" parent="."]
 margin_right = 48.0

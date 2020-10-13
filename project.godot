@@ -9,12 +9,12 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
+"base": "InteractableEntity",
 "class": "Council",
 "language": "GDScript",
 "path": "res://scripts/Council.gd"
 }, {
-"base": "Reference",
+"base": "InteractableEntity",
 "class": "Federation",
 "language": "GDScript",
 "path": "res://scripts/Federation.gd"
@@ -24,12 +24,17 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/HUD.gd"
 }, {
+"base": "Node2D",
+"class": "InteractableEntity",
+"language": "GDScript",
+"path": "res://scripts/InteractableEntity.gd"
+}, {
 "base": "PanelContainer",
 "class": "JsonDock",
 "language": "GDScript",
 "path": "res://addons/json_editor/json_dock.gd"
 }, {
-"base": "Node2D",
+"base": "InteractableEntity",
 "class": "Town",
 "language": "GDScript",
 "path": "res://scripts/Town.gd"
@@ -38,6 +43,7 @@ _global_script_class_icons={
 "Council": "",
 "Federation": "",
 "HUD": "",
+"InteractableEntity": "",
 "JsonDock": "",
 "Town": ""
 }

@@ -5,8 +5,8 @@ signal new_season_start
 
 var towns = []
 var global_priorities = []
+var relationships = []
 
-var player_federation: Federation
 var months := 0
 var season := 1
 var season_length := 1
@@ -14,13 +14,15 @@ var season_length := 1
 var rng := RandomNumberGenerator.new()
 
 var Town = preload("res://scenes/Town.tscn")
-var Federation = preload("res://scripts/Federation.gd")
+var federation = preload("res://scenes/Federation.tscn")
 
+var player_federation: Federation
 var resources = {"food": "farmers", "stone": "stone cutters"}
 
 
 func _ready() -> void:
-	player_federation = Federation.new("Baller")
+	player_federation = federation.instance()
+	player_federation.federation_name = "Baller"
 	global_priorities = openJSON("priorities")
 	var initial_towns = openJSON("initial_towns")
 	$SeasonsTimer.start()
@@ -61,7 +63,7 @@ func _on_SeasonsTimer_timeout() -> void:
 		emit_signal("new_season_start", season)
 
 
-func create_town(town_name: String, options: Dictionary) -> Town:
+func create_town(town_name: String, options: Dictionary):
 	var town = Town.instance()
 	town.town_name = town_name
 	town.tile_position = _generate_town_position()
@@ -70,7 +72,9 @@ func create_town(town_name: String, options: Dictionary) -> Town:
 		town.federations = [options.get("federation")]
 	else:
 		rng.randomize()
-		town.federations = [Federation.new("Federation %s" % rng.randi())]
+		var fed = federation.instance()
+		fed.federation_name = "Federation %s" % rng.randi()
+		town.federations = [fed]
 
 	if options.has("resources"):
 		town.town_resources = options.get("resources")
@@ -86,7 +90,7 @@ func create_town(town_name: String, options: Dictionary) -> Town:
 
 	add_child(town)
 	town.add_to_group("towns")
-	self.connect("new_season_start", town, "_on_world_new_season_start")
+#	self.connect("new_season_start", town, "_on_world_new_season_start")
 	town.connect("input_event", town, "_on_Town_pressed_event")
 	towns.append(town)
 	return town
@@ -120,14 +124,11 @@ func _generate_town_position():
 func _is_there_space_around_other_towns(random_tile_spot: Vector2):
 	var is_in_personal_space = false
 	for town in towns:
-		print("looking at town")
 		if town.tile_position:
-			print('  town position set', town.tile_position)
 			var town_min_x = town.tile_position.x - town.radius_needed
 			var town_max_x = town.tile_position.x + town.radius_needed
 			var town_min_y = town.tile_position.y - town.radius_needed
 			var town_max_y = town.tile_position.y + town.radius_needed
-			print("  square %s %s - %s %s" % [town_min_x, town_max_x, town_min_y, town_max_y])
 			if (
 				random_tile_spot.x > town_min_x
 				and random_tile_spot.x < town_max_x
