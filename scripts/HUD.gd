@@ -15,7 +15,8 @@ func receive_message(message: String, possible_actions: Array, pause_game = true
 	var actionable: WindowDialog = get_node("Actionable")
 
 	var margin = actionable.get_child(1).get_child(0)
-
+	for child in margin.get_children():
+		child.queue_free()
 	var hbox = VBoxContainer.new()
 
 	margin.add_child(hbox)

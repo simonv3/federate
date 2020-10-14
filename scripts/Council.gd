@@ -26,13 +26,6 @@ func _init() -> void:
 	pass
 
 
-#	council_name = new_council_name
-#	resource = new_resource
-#	member_number = new_council_amount
-#	priorities = new_priorities
-#	town = new_town
-
-
 func _on_town_inform_councils(season: int) -> void:
 	if season % 4 == 0:
 		resource_quantity = resource_multiplier_map[resource][output_multiplier] * member_number
@@ -106,6 +99,9 @@ func draw_self_in_HUD_details():
 	for priority in council.priorities:
 		add_label(council_vbox, priority.name)
 
+	for relationship in council.relationships:
+		add_label(council_vbox, relationship.readable)
+
 
 func _on_Productivity_clicked(council: Council, level: String):
 	council.set_productivity(level)
@@ -128,18 +124,29 @@ func _on_Council_Split_clicked(council: Council):
 
 
 func _on_Council_Send_Envoy(council: Council):
-	# Pop up a confirmation dialog.
-	var actions = []
-	for type in self.get_node('/root/world').resources:
-		actions.push_back(
-			{
-				"label": type,
-				"func_ref": funcref(self, "_split_council"),
-				"parameters": [type, council]
-			}
-		)
+	print("send envoy")
+	var player_federation = get_node("/root/world").player_federation
+	var actions = [
+		{
+			"label": "Yes",
+			"func_ref": funcref(self, "_send_federation_envoy"),
+			"parameters": [player_federation]
+		}
+	]
 	get_node('/root/world/HUD').receive_message(
-		"Split this council? What should its resource be?", actions, false
+		"Do you want to send an envoy to this council??", actions, false
+	)
+
+
+func _send_federation_envoy(envoy_of_federation):
+	var world = get_node('/root/world')
+	relationships.push_back(
+		{
+			"type": "has_federation_envoy",
+			"readable": "Envoy (%s)" % [envoy_of_federation.federation_name],
+			"created_at": world.months,
+			"source": envoy_of_federation
+		}
 	)
 
 
