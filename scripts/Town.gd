@@ -51,7 +51,7 @@ func is_in_federation(other_federation: Federation) -> bool:
 
 
 func set_selected(new_selected) -> void:
-	selected = new_selected
+	HUDDetails.close_everything()
 	if new_selected:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
@@ -60,6 +60,7 @@ func set_selected(new_selected) -> void:
 		($TownSelected as Sprite).show()
 	else:
 		($TownSelected as Sprite).hide()
+	selected = new_selected
 
 
 func create_council(name: String, resource, population, priorities) -> void:

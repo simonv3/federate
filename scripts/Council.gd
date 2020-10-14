@@ -93,7 +93,8 @@ func draw_self_in_HUD_details():
 
 		add_button(council_actions, "Split Council", "_on_Council_Split_clicked", [council])
 	else:
-		add_button(council_actions, "Send Envoy", "_on_Council_Send_Envoy", [council])
+		if not council.has_envoy_from(federation):
+			add_button(council_actions, "Send Envoy", "_on_Council_Send_Envoy", [council])
 
 	add_label(council_vbox, "Council Priorities")
 	for priority in council.priorities:
@@ -101,6 +102,14 @@ func draw_self_in_HUD_details():
 
 	for relationship in council.relationships:
 		add_label(council_vbox, relationship.readable)
+
+
+func has_envoy_from(federation):
+	var found = false
+	for relationship in relationships:
+		if relationship.source == federation:
+			found = relationship
+	return found
 
 
 func _on_Productivity_clicked(council: Council, level: String):
