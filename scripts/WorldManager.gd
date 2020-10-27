@@ -6,6 +6,8 @@ signal new_season_start
 var towns = []
 var global_priorities = []
 var relationships = []
+var possible_federation_names = []
+var possible_town_names = []
 
 var months := 0
 var season := 1
@@ -14,17 +16,19 @@ var season_length := 1
 var rng := RandomNumberGenerator.new()
 
 var Town = preload("res://scenes/Town.tscn")
-var federation = preload("res://scenes/Federation.tscn")
+var Federation = preload("res://scenes/Federation.tscn")
 
 var player_federation: Federation
 var resources = {"food": "farmers", "stone": "stone cutters"}
 
 
 func _ready() -> void:
-	player_federation = federation.instance()
+	player_federation = Federation.instance()
 	player_federation.federation_name = "Baller"
 	global_priorities = openJSON("priorities")
 	var initial_towns = openJSON("initial_towns")
+	possible_federation_names = openJSON("federation_names")
+	possible_town_names = openJSON("town_names")
 	$SeasonsTimer.start()
 
 	var priorities = pick_random_priorities(global_priorities)
@@ -40,6 +44,16 @@ func _ready() -> void:
 	for town in initial_towns:
 		town["councils"][0]["priorities"] = pick_random_priorities(global_priorities)
 		create_town("Babylon", town)
+
+
+func pick_random_federation_name():
+	randomize()
+	var suggested_name = possible_federation_names[randi() % possible_federation_names.size()]
+	for town in towns:
+		for federation in town.federations:
+			if federation.federation_name == suggested_name:
+				suggested_name = pick_random_federation_name()
+	return suggested_name
 
 
 func pick_random_priorities(global_priorities: Array):
@@ -85,9 +99,8 @@ func create_town(town_name: String, options: Dictionary):
 	if options.has("federation"):
 		town.federations = [options.get("federation")]
 	else:
-		rng.randomize()
-		var fed = federation.instance()
-		fed.federation_name = "Federation %s" % rng.randi()
+		var fed = Federation.instance()
+		fed.federation_name = pick_random_federation_name()
 		town.federations = [fed]
 
 	if options.has("resources"):
