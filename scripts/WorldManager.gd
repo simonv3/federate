@@ -27,7 +27,7 @@ func _ready() -> void:
 	var initial_towns = openJSON("initial_towns")
 	$SeasonsTimer.start()
 
-	var priorities = global_priorities.slice(0, 4)
+	var priorities = pick_random_priorities(global_priorities)
 
 	var player_town = initial_towns.pop_front()
 
@@ -38,8 +38,22 @@ func _ready() -> void:
 	$Camera2D.position = created_player_town.position
 
 	for town in initial_towns:
-		town["councils"][0]["priorities"] = priorities
+		town["councils"][0]["priorities"] = pick_random_priorities(global_priorities)
 		create_town("Babylon", town)
+
+
+func pick_random_priorities(global_priorities: Array):
+	var new_priorities = []
+	var used_indexes = []
+	for i in range(0, 5):
+		randomize()
+		var idx = randi() % global_priorities.size()
+		while used_indexes.has(idx):
+			randomize()
+			idx = randi() % global_priorities.size()
+		used_indexes.push_back(idx)
+		new_priorities.push_back(global_priorities[idx])
+	return new_priorities
 
 
 func openJSON(file_location):

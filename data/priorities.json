@@ -1,16 +1,38 @@
-[{
-	"name": "diligence",
-	"dislikes": []
-}, {
-	"name": "federating",
-	"dislikes": []
-}, {
-	"name": "surplus growth",
-	"dislikes": []
-}, {
-	"name": "happiness",
-	"dislikes": []
-}, {
-	"name": "environment",
-	"dislikes": []
-}]
+[
+  {
+    "name": "diligence",
+    "dislikes": []
+  },
+  {
+    "name": "federating",
+    "dislikes": []
+  },
+  {
+    "name": "surplus growth",
+    "dislikes": []
+  },
+  {
+    "name": "happiness",
+    "dislikes": []
+  },
+  {
+    "name": "environment",
+    "dislikes": ["surplus growth"]
+  },
+  {
+    "name": "inclusion",
+    "dislikes": []
+  },
+  {
+    "name": "culture",
+    "dislikes": []
+  },
+  {
+    "name": "markets",
+    "dislikes": []
+  },
+  {
+    "name": "security",
+    "dislikes": []
+  }
+]

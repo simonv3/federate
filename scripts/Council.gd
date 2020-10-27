@@ -100,10 +100,11 @@ func draw_self_in_HUD_details():
 
 	add_label(council_vbox, "Council Priorities")
 	for priority in council.priorities:
-		add_label(council_vbox, priority.name)
+		add_label(council_vbox, "   %s" % [priority.name])
 
+	add_label(council_vbox, "Relationships")
 	for relationship in council.relationships:
-		add_label(council_vbox, relationship.readable)
+		add_label(council_vbox, "   %s" % [relationship.readable])
 
 
 func has_envoy_from(federation):
