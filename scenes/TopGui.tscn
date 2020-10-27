@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://sprites/Fonts/Kenney Future.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://sprites/UI/label_HP_bg.png" type="Texture" id=2]
 
 [sub_resource type="DynamicFont" id=1]
 font_data = ExtResource( 1 )
@@ -47,7 +46,6 @@ margin_bottom = 40.0
 margin_right = 120.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 120, 40 )
-texture = ExtResource( 2 )
 
 [node name="Title" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Mood/Background"]
 anchor_top = 0.5
@@ -85,7 +83,6 @@ margin_bottom = 40.0
 margin_right = 120.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 120, 40 )
-texture = ExtResource( 2 )
 
 [node name="Title" type="Label" parent="HBoxContainer/Bars/Bar/VBoxContainer/Food/Background"]
 anchor_top = 0.5

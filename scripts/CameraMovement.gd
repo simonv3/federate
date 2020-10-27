@@ -1,7 +1,7 @@
 extends Camera2D
 
-export var panSpeed = 10.0
-export var speed = 10.0
+export var panSpeed = 15.0
+export var speed = 15.0
 export var zoomspeed = 10.0
 export var zoommargin = 0.1
 
@@ -23,14 +23,15 @@ var is_dragging = false
 var zoompos = Vector2()
 var zoomfactor := 1.0
 var zooming = false
-
-signal area_selected
+#
+#signal area_selected
 
 
 func _ready():
 	pass
 
-	connect("area_selected", get_parent(), "area_selected", [self])
+
+#	connect("area_selected", get_parent(), "area_selected", [self])
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -92,11 +93,11 @@ func _process(delta):
 			endDrag = startDrag
 			is_dragging = false
 
-	zoom.x = lerp(zoom.x, zoom.x * zoomfactor, zoomspeed * delta)
-	zoom.y = lerp(zoom.y, zoom.y * zoomfactor, zoomspeed * delta)
-
-	zoom.x = clamp(zoom.x, zoomMin, zoomMax)
-	zoom.y = clamp(zoom.y, zoomMin, zoomMax)
+#	zoom.x = lerp(zoom.x, zoom.x * zoomfactor, zoomspeed * delta)
+#	zoom.y = lerp(zoom.y, zoom.y * zoomfactor, zoomspeed * delta)
+#
+#	zoom.x = clamp(zoom.x, zoomMin, zoomMax)
+#	zoom.y = clamp(zoom.y, zoomMin, zoomMax)
 #
 	if not zooming:
 		zoomfactor = 1.0
@@ -108,17 +109,17 @@ func _input(event):
 	if abs(zoompos.y - get_global_mouse_position().y) > zoommargin:
 		zoomfactor = 1.0
 
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			zooming = true
-			if event.button_index == BUTTON_WHEEL_UP:
-				zoomfactor -= 0.01 * zoomspeed
-				zoompos = get_global_mouse_position()
-			if event.button_index == BUTTON_WHEEL_DOWN:
-				zoomfactor += 0.01 * zoomspeed
-				zoompos = get_global_mouse_position()
-		else:
-			zooming = false
+#	if event is InputEventMouseButton:
+#		if event.is_pressed():
+#			zooming = true
+#			if event.button_index == BUTTON_WHEEL_UP:
+#				zoomfactor -= 0.01 * zoomspeed
+#				zoompos = get_global_mouse_position()
+#			if event.button_index == BUTTON_WHEEL_DOWN:
+#				zoomfactor += 0.01 * zoomspeed
+#				zoompos = get_global_mouse_position()
+#		else:
+#			zooming = false
 
 	if event is InputEventMouse:
 		mousepos = event.position

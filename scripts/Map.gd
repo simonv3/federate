@@ -7,7 +7,7 @@ var water_cap = -0.02
 
 func _ready():
 	noise = OpenSimplexNoise.new()
-	noise.octaves = 1.0
+	noise.octaves = 2
 	noise.period = 7
 
 	make_grass_map()

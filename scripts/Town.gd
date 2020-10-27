@@ -63,11 +63,11 @@ func set_selected(new_selected) -> void:
 	selected = new_selected
 
 
-func create_council(name: String, resource, population, priorities) -> void:
+func create_council(name: String, resource, council_population, priorities) -> void:
 	var council = Council.instance()
 	council.council_name = name
 	council.resource = resource
-	council.member_number = population
+	council.member_number = council_population
 	council.priorities = priorities
 	council.town = self
 	council.connect("produce_resource", self, "_on_produce_resource")
@@ -143,14 +143,17 @@ func draw_self_in_HUD_details():
 		"Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
 	)
 
-	var councils = HBoxContainer.new()
+	var councils_hbox = HBoxContainer.new()
 
 	var aggregateOpinion = 0
+	var opinion_array = []
 	var federation = get_node('/root/world').player_federation
 
 	for council in town.councils:
 		var councilBox = VBoxContainer.new()
-		aggregateOpinion += council.calculate_opinion_of('federation', federation)
+		var opinion = council.calculate_opinion_of('federation', federation)
+		aggregateOpinion += opinion[0]
+		opinion_array += opinion[1]
 		add_label(councilBox, council.council_name)
 		add_button(councilBox, "View Details", "_on_Council_clicked", [council])
 		if town.is_player_town():
@@ -160,11 +163,15 @@ func draw_self_in_HUD_details():
 				add_button(
 					councilBox, "Set as Growth Priority", "_on_Council_growth_priority", [council]
 				)
-		councils.add_child(councilBox)
+		councils_hbox.add_child(councilBox)
 
-	add_label(town_vbox, "Opinion of %s: %s" % [federation.federation_name, aggregateOpinion])
+	add_opinion_hover(
+		town_vbox,
+		"Opinion of %s: %s" % [federation.federation_name, aggregateOpinion],
+		opinion_array
+	)
 
-	town_vbox.add_child(councils)
+	town_vbox.add_child(councils_hbox)
 	var stats = VBoxContainer.new()
 	town_vbox.add_child(stats)
 

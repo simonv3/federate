@@ -47,10 +47,12 @@ func calculate_opinion_of(type: String, OpiningAbout):
 	if type == 'federation':
 		if self.town.is_in_federation(OpiningAbout):
 			opinion.push_back({"value": 10, "reason": "Same federation"})
+		if has_envoy_from(OpiningAbout):
+			opinion.push_back({"value": 10, "reason": "Has envoy"})
 	var opinion_sum = 0
 	for item in opinion:
 		opinion_sum += item["value"]
-	return opinion_sum
+	return [opinion_sum, opinion]
 
 
 func draw_self_in_HUD_details():
@@ -62,12 +64,12 @@ func draw_self_in_HUD_details():
 	)
 
 	var federation = get_node('/root/world').player_federation
-	add_label(
+	var opinion_array = council.calculate_opinion_of('federation', federation)
+
+	add_opinion_hover(
 		council_vbox,
-		(
-			"Opinion of %s: %s"
-			% [federation.federation_name, council.calculate_opinion_of('federation', federation)]
-		)
+		"Opinion of %s: %s" % [federation.federation_name, opinion_array[0]],
+		opinion_array[1]
 	)
 
 	add_button(council_vbox, "View Town", "_on_Town_clicked", [council.town])
@@ -94,7 +96,7 @@ func draw_self_in_HUD_details():
 		add_button(council_actions, "Split Council", "_on_Council_Split_clicked", [council])
 	else:
 		if not council.has_envoy_from(federation):
-			add_button(council_actions, "Send Envoy", "_on_Council_Send_Envoy", [council])
+			add_button(council_actions, "Send Envoy", "_on_Council_Send_Envoy", [])
 
 	add_label(council_vbox, "Council Priorities")
 	for priority in council.priorities:
@@ -132,8 +134,7 @@ func _on_Council_Split_clicked(council: Council):
 	)
 
 
-func _on_Council_Send_Envoy(council: Council):
-	print("send envoy")
+func _on_Council_Send_Envoy():
 	var player_federation = get_node("/root/world").player_federation
 	var actions = [
 		{
