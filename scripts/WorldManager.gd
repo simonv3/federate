@@ -93,13 +93,16 @@ func _on_SeasonsTimer_timeout() -> void:
 
 func create_town(town_name: String, options: Dictionary):
 	var town = Town.instance()
+	town.add_to_group("towns")
 	town.town_name = town_name
 	town.tile_position = _generate_town_position()
 	town.position = _convert_tile_position_to_x_y(town.tile_position)
 	if options.has("federation"):
+		options.get("federation").add_to_group("federations")
 		town.federations = [options.get("federation")]
 	else:
 		var fed = Federation.instance()
+		fed.add_to_group("federations")
 		fed.federation_name = pick_random_federation_name()
 		town.federations = [fed]
 

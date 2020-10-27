@@ -41,14 +41,25 @@ func set_productivity(level: String):
 		output_multiplier = level
 
 
-func calculate_opinion_of(type: String, OpiningAbout):
+func calculate_opinion_of(type: String, opining_about):
 	var opinion = []
 
 	if type == 'federation':
-		if self.town.is_in_federation(OpiningAbout):
+		if self.town.is_in_federation(opining_about):
 			opinion.push_back({"value": 10, "reason": "Same federation"})
-		if has_envoy_from(OpiningAbout):
+		if has_envoy_from(opining_about):
 			opinion.push_back({"value": 10, "reason": "Has envoy"})
+
+		for priority in self.priorities:
+			for town in get_node("/root/world").towns:
+				if town.is_in_federation(opining_about):
+					for council in town.councils:
+						for council_priority in council.priorities:
+							if council_priority["name"] == priority["name"]:
+								opinion.push_back(
+									{"value": 2, "reason": "Both value %s" % [priority["name"]]}
+								)
+
 	var opinion_sum = 0
 	for item in opinion:
 		opinion_sum += item["value"]
