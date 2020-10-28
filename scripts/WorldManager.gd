@@ -142,7 +142,7 @@ func _generate_town_position():
 		rng.randi_range(offset_from_map_edge, $Map.map_size.y - offset_from_map_edge)
 	)
 	# If there is water in this spot, go find a new spot.
-	if $Map/Water.get_cellv(random_tile_spot) != -1:
+	if $Map/Water.get_cellv(random_tile_spot) != -1 or $Map/Woods.get_cellv(random_tile_spot) != -1:
 		return _generate_town_position()
 
 	if _is_there_space_around_other_towns(random_tile_spot):
