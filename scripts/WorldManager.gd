@@ -43,7 +43,7 @@ func _ready() -> void:
 
 	for town in initial_towns:
 		town["councils"][0]["priorities"] = pick_random_priorities(global_priorities)
-		create_town("Babylon", town)
+		create_town(pick_random_town_name(), town)
 
 
 func pick_random_federation_name():
@@ -53,6 +53,15 @@ func pick_random_federation_name():
 		for federation in town.federations:
 			if federation.federation_name == suggested_name:
 				suggested_name = pick_random_federation_name()
+	return suggested_name
+
+
+func pick_random_town_name():
+	randomize()
+	var suggested_name = possible_town_names[randi() % possible_town_names.size()]
+	for town in towns:
+		if town.town_name == suggested_name:
+			suggested_name = pick_random_town_name()
 	return suggested_name
 
 
