@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/GUI/CouncilButton.gd" type="Script" id=1]
+
+[node name="Control" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CouncilName" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="ViewDetails" type="Button" parent="."]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 38.0
+text = "View Details"
+
+[node name="Control" type="VBoxContainer" parent="."]
+visible = false
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 42.0
+
+[node name="SetAsGrowthPriority" type="Button" parent="Control"]
+margin_top = 4.0
+margin_right = 1024.0
+margin_bottom = 24.0
+text = "Make Growth Priority"
+
+[node name="IsGrowthPriority" type="Label" parent="Control"]
+visible = false
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Is Growth Priority"
+[connection signal="pressed" from="ViewDetails" to="." method="_on_ViewDetails_pressed"]
+[connection signal="pressed" from="Control/SetAsGrowthPriority" to="." method="_on_SetAsGrowthPriority_pressed"]

@@ -1,6 +1,8 @@
 extends CanvasLayer
 class_name HUD
 
+signal open_details
+
 var paused := false
 
 onready var details_container: VBoxContainer = get_node("UI/Bottom/Panel/Details")
@@ -72,3 +74,7 @@ func _on_action_button_pressed(action):
 		var actionable: WindowDialog = get_node("Actionable")
 		actionable.visible = false
 	_pause_game(false)
+
+
+func _on_HUD_open_details():
+	$UI/Bottom/Panel.show()

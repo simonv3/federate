@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/GUI/ProductivityToggles.gd" type="Script" id=1]
+
+[node name="ProductivityToggles" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Production"
+
+[node name="Toggles" type="HBoxContainer" parent="."]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 38.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Low" type="Button" parent="Toggles"]
+margin_right = 34.0
+margin_bottom = 20.0
+text = "low"
+
+[node name="Medium" type="Button" parent="Toggles"]
+margin_left = 38.0
+margin_right = 104.0
+margin_bottom = 20.0
+text = "medium"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="High" type="Button" parent="Toggles"]
+margin_left = 108.0
+margin_right = 147.0
+margin_bottom = 20.0
+text = "high"
+[connection signal="pressed" from="Toggles/Low" to="." method="_on_Low_pressed"]
+[connection signal="pressed" from="Toggles/Medium" to="." method="_on_Medium_pressed"]
+[connection signal="pressed" from="Toggles/High" to="." method="_on_High_pressed"]

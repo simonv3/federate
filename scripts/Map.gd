@@ -29,14 +29,13 @@ func make_grass_map():
 func make_woods():
 	randomize()
 	var wood_noise = OpenSimplexNoise.new()
-	wood_noise.octaves = 1
-	wood_noise.period = 3
+	wood_noise.octaves = 2
+	wood_noise.period = 5
 	wood_noise.seed = randi()
 	for x in map_size.x:
 		for y in map_size.y:
 			var a = wood_noise.get_noise_2d(x, y)
 			var cellv = $Water.get_cellv(Vector2(x, y))
-			print('cellv', cellv)
 			var has_water = cellv != -1
 			if a > woods_cap and not has_water:
 				$Woods.set_cell(x, y, 0)

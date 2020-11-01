@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/GUI/TownDetails.gd" type="Script" id=1]
+
+[node name="TownDetails" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TownTitle" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="Councils" type="HBoxContainer" parent="."]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 18.0
+
+[node name="Resources" type="VBoxContainer" parent="."]
+margin_top = 22.0
+margin_right = 1024.0
+margin_bottom = 22.0
+
+[node name="Opinion" type="Label" parent="."]
+margin_top = 26.0
+margin_right = 1024.0
+margin_bottom = 40.0
+mouse_filter = 0
+text = "Opinion"
+
+[node name="Statistics" type="VBoxContainer" parent="."]
+margin_top = 44.0
+margin_right = 1024.0
+margin_bottom = 76.0
+
+[node name="Population" type="Label" parent="Statistics"]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="Happiness" type="Label" parent="Statistics"]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 32.0
+[connection signal="open_with_town" from="." to="." method="_on_TownDetails_open_with_town"]

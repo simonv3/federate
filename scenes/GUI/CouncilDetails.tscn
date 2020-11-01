@@ -1,0 +1,118 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/GUI/CouncilStatistics.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/GUI/ProductivityToggles.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/GUI/CouncilDetails.gd" type="Script" id=3]
+
+[node name="CouncilDetails" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CouncilName" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="Opinion" type="Label" parent="."]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 32.0
+mouse_filter = 0
+
+[node name="ViewTown" type="Button" parent="."]
+margin_top = 36.0
+margin_right = 1024.0
+margin_bottom = 56.0
+text = "View Town"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Statistics" parent="." instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 60.0
+margin_right = 1024.0
+margin_bottom = 92.0
+
+[node name="PlayerActions" type="VBoxContainer" parent="."]
+margin_top = 96.0
+margin_right = 1024.0
+margin_bottom = 182.0
+
+[node name="ProductivityToggles" parent="PlayerActions" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 38.0
+
+[node name="SplitCouncil" type="Button" parent="PlayerActions"]
+margin_top = 42.0
+margin_right = 1024.0
+margin_bottom = 62.0
+text = "Split Council"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SendEnvoy" type="Button" parent="PlayerActions"]
+margin_top = 66.0
+margin_right = 1024.0
+margin_bottom = 86.0
+text = "Send Envoy"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Priorities" type="VBoxContainer" parent="."]
+margin_top = 186.0
+margin_right = 1024.0
+margin_bottom = 222.0
+
+[node name="PrioritiesLabel" type="Label" parent="Priorities"]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Council Priorities"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PrioritiesList" type="Label" parent="Priorities"]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 32.0
+
+[node name="Control" type="Control" parent="Priorities"]
+margin_top = 36.0
+margin_right = 1024.0
+margin_bottom = 36.0
+
+[node name="Relationships" type="VBoxContainer" parent="."]
+margin_top = 226.0
+margin_right = 1024.0
+margin_bottom = 259.0
+
+[node name="RelationshipsLabel" type="Label" parent="Relationships"]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Relationships"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RelationshipsList" type="RichTextLabel" parent="Relationships"]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 33.0
+bbcode_enabled = true
+fit_content_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="open_with_council" from="." to="." method="_on_CouncilDetails_open_with_council"]
+[connection signal="pressed" from="ViewTown" to="." method="_on_ViewTown_pressed"]
+[connection signal="pressed" from="PlayerActions/SplitCouncil" to="." method="_on_SplitCouncil_pressed"]
+[connection signal="pressed" from="PlayerActions/SendEnvoy" to="." method="_on_SendEnvoy_pressed"]

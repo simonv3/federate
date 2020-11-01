@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scripts/HUDDetails.gd" type="Script" id=1]
+[ext_resource path="res://scenes/GUI/CouncilDetails.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/GUI/TownDetails.tscn" type="PackedScene" id=3]
+
+[node name="Details" type="VBoxContainer"]
+pause_mode = 2
+margin_right = 300.0
+margin_bottom = 348.0
+rect_min_size = Vector2( 300, 0 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Close" type="Button" parent="."]
+margin_right = 300.0
+margin_bottom = 20.0
+text = "Close Details"
+
+[node name="Content" type="VBoxContainer" parent="."]
+margin_top = 24.0
+margin_right = 300.0
+margin_bottom = 348.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CouncilDetails" parent="Content" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 300.0
+margin_bottom = 226.0
+
+[node name="TownDetails" parent="Content" instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 230.0
+margin_right = 300.0
+margin_bottom = 306.0
+[connection signal="open_council" from="." to="." method="_on_open_council"]
+[connection signal="open_town" from="." to="." method="_on_open_town"]
+[connection signal="pressed" from="Close" to="." method="_on_Close_pressed"]

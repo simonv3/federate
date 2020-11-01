@@ -51,12 +51,13 @@ func is_in_federation(other_federation: Federation) -> bool:
 
 
 func set_selected(new_selected) -> void:
-	HUDDetails.close_everything()
+#	HUDDetails.close_everything()
 	if new_selected:
 		var all_towns = get_tree().get_nodes_in_group("towns")
 		for town in all_towns:
 			town.selected = false
-		draw_self_in_HUD_details()
+
+		HUDDetails.emit_signal("open_town", self)
 		($TownSelected as Sprite).show()
 	else:
 		($TownSelected as Sprite).hide()
@@ -82,6 +83,7 @@ func set_population(new_population: int) -> void:
 
 func set_growth_priority(council):
 	growth_priority = council
+	growth_priority.emit_signal("on_statistics_updated")
 
 
 # We'll want a more sophisticated way of calculating happiness at some point!
@@ -113,7 +115,9 @@ func _grow_town() -> void:
 		set_population(population + 1)
 		town_resources.food -= food_cost_of_person
 		if growth_priority:
-			growth_priority.member_number = clamp(growth_priority.member_number + 1, 0, population)
+			growth_priority.set_member_number(
+				clamp(growth_priority.member_number + 1, 0, population)
+			)
 
 
 func _calculate_idle_people() -> int:
@@ -134,55 +138,3 @@ func _on_Town_mouse_entered():
 
 func _on_Town_mouse_exited():
 	label.visible = false
-
-
-func draw_self_in_HUD_details():
-	var town = self
-
-	var town_vbox = toggle_to_show(
-		"Town", "%s (Federation: %s)" % [town.town_name, town.federations[0].federation_name]
-	)
-
-	var councils_hbox = HBoxContainer.new()
-
-	var aggregateOpinion = 0
-	var opinion_array = []
-	var federation = get_node('/root/world').player_federation
-
-	for council in town.councils:
-		var councilBox = VBoxContainer.new()
-		var opinion = council.calculate_opinion_of('federation', federation)
-		aggregateOpinion += opinion[0]
-		opinion_array += opinion[1]
-		add_label(councilBox, council.council_name)
-		add_button(councilBox, "View Details", "_on_Council_clicked", [council])
-		if town.is_player_town():
-			if council.town.growth_priority == council:
-				add_label(councilBox, "Is Growth Priority")
-			else:
-				add_button(
-					councilBox, "Set as Growth Priority", "_on_Council_growth_priority", [council]
-				)
-		councils_hbox.add_child(councilBox)
-
-	add_opinion_hover(
-		town_vbox,
-		"Opinion of %s: %s" % [federation.federation_name, aggregateOpinion],
-		opinion_array
-	)
-
-	town_vbox.add_child(councils_hbox)
-	var stats = VBoxContainer.new()
-	town_vbox.add_child(stats)
-
-	# TODO: make resources only show if they exist.
-	for resource in town.town_resources:
-		add_label(stats, "Surplus %s: %s" % [resource, town.town_resources[resource]])
-#		add_label(stats, "Food: %s" % details_town.town_resources.food)
-#		add_label(stats, "Stone: %s" % details_town.town_resources.stone)
-	add_label(stats, "Population: %s" % town.population)
-	add_label(stats, "Happiness: %s" % town.calculate_happiness())
-
-
-func _on_Council_growth_priority(council: Council):
-	council.town.set_growth_priority(council)
