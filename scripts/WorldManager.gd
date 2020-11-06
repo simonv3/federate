@@ -94,6 +94,7 @@ func _process(_delta) -> void:
 
 
 func _on_SeasonsTimer_timeout() -> void:
+	act_for_non_player_towns()
 	months += 1
 	if months % season_length == 0:
 		season += 1
@@ -118,14 +119,20 @@ func create_town(town_name: String, options: Dictionary):
 	if options.has("resources"):
 		town.town_resources = options.get("resources")
 
+	var population = 0
 	if options.has("councils"):
 		for council in options.get("councils"):
+			var council_population = council.get("population", 5)
 			town.create_council(
 				council.get("name"),
 				council.get("resource"),
-				council.get("population", 5),
+				council_population,
 				council.get("priorities", [])
 			)
+			population += council_population
+	else:
+		population = 5
+	town.set_population(population)
 
 	add_child(town)
 	town.add_to_group("towns")
@@ -176,3 +183,23 @@ func _is_there_space_around_other_towns(random_tile_spot: Vector2):
 			):
 				is_in_personal_space = true
 	return is_in_personal_space
+
+
+func act_for_non_player_towns():
+	var rng = RandomNumberGenerator.new()
+
+	for town in towns:
+		if not town.is_player_town():
+			# determine if town should set council as priority
+			var should_set = []
+			for council in town.councils:
+				for priority in council.priorities:
+					if priority.name == 'surplus growth':
+						should_set.push_back(council)
+			rng.randomize()
+			var percent = rng.randf()
+			if percent < 0.1 && should_set.size() > 0:
+				var council_to_prioritize_index = rng.randi_range(0, should_set.size() - 1)
+				var council = should_set[council_to_prioritize_index]
+				town.growth_priority = council
+				council.set_productivity("high")

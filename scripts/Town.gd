@@ -1,7 +1,8 @@
-extends InteractableEntity
+extends Node2D
 class_name Town
 
 signal inform_councils
+signal statistics_updated
 
 export var town_name := ""
 export var population := 5 setget set_population
@@ -29,12 +30,16 @@ var radius_needed = 4  # in tiles
 
 var label
 
+onready var OpinionHover = get_node("/root/world/HUD/OpinionHover")
+onready var HUDDetails = get_node("/root/world/HUD/UI/Bottom/Panel/Details")
+
 
 func _init():
 	pass
 
 
 func _ready():
+	get_node("/root/world").connect("new_season_start", self, "_on_world_new_season_start")
 	label = get_node("TownName")
 	label.text = self.town_name
 
@@ -100,7 +105,6 @@ func calculate_happiness():
 func _on_world_new_season_start(season):
 	_grow_town()
 	emit_signal("inform_councils", season)
-	._on_world_new_season_start(season)
 
 
 func _on_produce_resource(resource, quantity) -> void:
@@ -115,9 +119,8 @@ func _grow_town() -> void:
 		set_population(population + 1)
 		town_resources.food -= food_cost_of_person
 		if growth_priority:
-			growth_priority.set_member_number(
-				clamp(growth_priority.member_number + 1, 0, population)
-			)
+			var new_member_num = clamp(growth_priority.member_number + 1, 0, population)
+			growth_priority.set_member_number(new_member_num)
 
 
 func _calculate_idle_people() -> int:

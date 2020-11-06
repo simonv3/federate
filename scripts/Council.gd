@@ -1,9 +1,9 @@
-extends InteractableEntity
+extends Node2D
 class_name Council
 
 signal produce_resource
-signal on_resources_updated
 signal on_statistics_updated
+signal statistics_updated
 
 export var council_name := ''
 export var member_number := 0 setget set_member_number
@@ -22,6 +22,16 @@ var priorities := []
 var relationships := []
 
 var resource_quantity
+
+onready var OpinionHover = get_node("/root/world/HUD/OpinionHover")
+onready var HUDDetails = get_node("/root/world/HUD/UI/Bottom/Panel/Details")
+
+
+func _ready():
+	pass
+
+
+#	get_node("/root/world").connect("new_season_start", self, "_on_world_new_season_start")
 
 
 func _on_town_inform_councils(season: int) -> void:
@@ -44,7 +54,14 @@ func set_productivity(level: String):
 
 func calculate_opinion_of(type: String, opining_about):
 	var opinion = []
-
+	print(
+		"opinion about ",
+		opining_about.federation_name,
+		" by ",
+		self.council_name,
+		' in ',
+		self.town.town_name
+	)
 	if type == 'federation':
 		if self.town.is_in_federation(opining_about):
 			opinion.push_back({"value": 10, "reason": "Same federation"})
@@ -52,15 +69,15 @@ func calculate_opinion_of(type: String, opining_about):
 			opinion.push_back({"value": 10, "reason": "Has envoy"})
 
 		for priority in self.priorities:
-			for town in get_node("/root/world").towns:
-				if town.is_in_federation(opining_about):
-					for council in town.councils:
+			for a_town in get_node("/root/world").towns:
+				if a_town.is_in_federation(opining_about):
+					for council in a_town.councils:
 						for council_priority in council.priorities:
 							if council_priority["name"] == priority["name"]:
 								opinion.push_back(
 									{"value": 2, "reason": "Both value %s" % [priority["name"]]}
 								)
-
+	print(opinion)
 	var opinion_sum = 0
 	for item in opinion:
 		opinion_sum += item["value"]

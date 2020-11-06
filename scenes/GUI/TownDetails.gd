@@ -38,15 +38,18 @@ func _update():
 		council_button.council = council
 		$Councils.add_child(council_button)
 		var opinion = council.calculate_opinion_of('federation', federation)
+		print('opinion for council ', opinion)
 		aggregateOpinion += opinion[0]
 		opinion_array += opinion[1]
+	print('opinion_array ', opinion_array, ' ', aggregateOpinion)
+	if $Opinion.is_connected("mouse_entered", OpinionHover, "_on_opinion_mouse_entered"):
+		$Opinion.disconnect("mouse_entered", OpinionHover, "_on_opinion_mouse_entered")
+		$Opinion.disconnect("mouse_exited", OpinionHover, "_on_opinion_mouse_exited")
 
-	if not $Opinion.is_connected("mouse_entered", OpinionHover, "_on_opinion_mouse_entered"):
-		$Opinion.connect(
-			"mouse_entered", OpinionHover, "_on_opinion_mouse_entered", [opinion_array]
-		)
-		$Opinion.connect("mouse_exited", OpinionHover, "_on_opinion_mouse_exited")
-		$Opinion.text = "Opinion of %s: %s" % [federation.federation_name, aggregateOpinion]
+	$Opinion.connect("mouse_entered", OpinionHover, "_on_opinion_mouse_entered", [opinion_array])
+	$Opinion.connect("mouse_exited", OpinionHover, "_on_opinion_mouse_exited")
+
+	$Opinion.text = "Opinion of %s: %s" % [federation.federation_name, aggregateOpinion]
 
 	for child in $Resources.get_children():
 		child.queue_free()
